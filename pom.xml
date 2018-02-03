@@ -6,7 +6,7 @@
   <packaging>jar</packaging>
   <name>New Relic Command Line</name>
   <description>
-    Java library providing command line utilities for New Relic.
+    Java library that allows New Relic Monitoring and Alerting configuration operations to be executed from the command line.
   </description>
   <url>https://github.com/opsmatters/newrelic-command</url>
 
