@@ -16,4 +16,11 @@
     </dependencySet>
   </dependencySets>
 
+  <fileSets>
+    <fileSet>
+      <directory>${basedir}/src/main/bin/</directory>
+      <outputDirectory>bin</outputDirectory>
+    </fileSet>
+  </fileSets>
+
 </assembly>
