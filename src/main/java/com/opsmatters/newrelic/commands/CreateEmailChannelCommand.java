@@ -19,26 +19,27 @@ package com.opsmatters.newrelic.commands;
 import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import com.opsmatters.newrelic.api.NewRelicApi;
-import com.opsmatters.newrelic.api.model.alerts.IncidentPreference;
-import com.opsmatters.newrelic.api.model.alerts.policies.AlertPolicy;
+import com.opsmatters.newrelic.api.model.alerts.channels.AlertChannel;
+import com.opsmatters.newrelic.api.model.alerts.channels.EmailChannel;
 
 /**
- * Implements the New Relic command line option to create an alert policy.  
+ * Implements the New Relic command line option to create an email alert channel.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class CreateAlertPolicyCommand extends BaseCommand
+public class CreateEmailChannelCommand extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(CreateAlertPolicyCommand.class.getName());
+    private static final Logger logger = Logger.getLogger(CreateEmailChannelCommand.class.getName());
 
     private String name;
-    private String incidentPreference = IncidentPreference.PER_POLICY.name();
+    private String recipients;
+    private boolean includeJsonAttachment = false;
 
     /**
      * Constructor that takes a list of arguments.
      * @param args The argument list
      */
-    public CreateAlertPolicyCommand(String[] args)
+    public CreateEmailChannelCommand(String[] args)
     {
         super(args);
         options();
@@ -51,8 +52,9 @@ public class CreateAlertPolicyCommand extends BaseCommand
     {
         super.options();
 
-        options.addOption("n", "name", true, "The name of the alert policy");
-        options.addOption("i", "incident_preference", true, "The incident preference of the alert policy");
+        options.addOption("n", "name", true, "The name of the alert channel");
+        options.addOption("r", "recipients", true, "The email recipients of the alert channel");
+        options.addOption("i", "include_json_attachment", false, "Include the details with the message as a JSON attachment");
     }
 
     /**
@@ -74,17 +76,30 @@ public class CreateAlertPolicyCommand extends BaseCommand
             help();
         }
 
-        // Incident preference option
+        // Recipients option
+        if(cli.hasOption("r"))
+        {
+            recipients = cli.getOptionValue("r");
+            if(verbose)
+                logger.info("Using recipients: "+recipients);
+        }
+        else
+        {
+            logger.severe("\"recipients\" option is missing");
+            help();
+        }
+
+        // IncludeJsonAttachment option
         if(cli.hasOption("i"))
         {
-            incidentPreference = cli.getOptionValue("i");
+            includeJsonAttachment = true;
             if(verbose)
-                logger.info("Using incident preference: "+incidentPreference);
+                logger.info("Using includeJsonAttachment: "+includeJsonAttachment);
         }
     }
 
     /**
-     * Create the alert policy.
+     * Create the email alert channel.
      */
     protected void execute()
     {
@@ -96,14 +111,15 @@ public class CreateAlertPolicyCommand extends BaseCommand
             .build();
 
         if(verbose)
-            logger.info("Creating alert policy: "+name);
+            logger.info("Creating email channel: "+name);
 
-        AlertPolicy p = AlertPolicy.builder()
+        EmailChannel c = EmailChannel.builder()
             .name(name)
-            .incidentPreference(incidentPreference)
+            .recipients(recipients)
+            .includeJsonAttachment(includeJsonAttachment)
             .build();
 
-        AlertPolicy policy = api.alertPolicies().create(p).get();
-        logger.info("Created alert policy: "+policy.getId()+" - "+policy.getName());
+        AlertChannel channel = api.alertChannels().create(c).get();
+        logger.info("Created email channel: "+channel.getId()+" - "+channel.getName());
     }
 }

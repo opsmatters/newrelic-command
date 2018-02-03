@@ -33,8 +33,10 @@ public abstract class BaseCommand
 {
     private static final Logger logger = Logger.getLogger(BaseCommand.class.getName());
 
-    protected String[] args = null;
+    protected String[] args;
     protected Options options = new Options();
+    protected String apiKey;
+    protected boolean verbose = false;
 
     /**
      * Constructor that takes a list of arguments.
@@ -50,11 +52,11 @@ public abstract class BaseCommand
      */
     public void options()
     {
-        options.addOption("h", "help", false, "show help.");
-        options.addOption("v", "var", true, "Here you can set parameter .");
+        options.addOption("h", "help", false, "Prints a usage statement");
+        options.addOption("v", "verbose", false, "Enables verbose logging messages");
+        options.addOption("a", "api_key", true, "The New Relic API key for the account or user");
     }
 
-//GERALD: add to base class
     /**
      * Parse the command line arguments.
      */
@@ -76,32 +78,45 @@ public abstract class BaseCommand
             // Verbose option
             if(cli.hasOption("v"))
             {
-//GERALD: fix
-                logger.info("Using cli argument -v=" + cli.getOptionValue("v"));
-//GERALD: implement
+                verbose = true;
+            }
+
+            // API key option
+            if(cli.hasOption("a"))
+            {
+                apiKey = cli.getOptionValue("a");
+                if(verbose)
+                    logger.info("Using API key: "+apiKey);
             }
             else
             {
-//GERALD: fix
-                logger.severe("MIssing v option");
+                logger.severe("\"api_key\" option is missing");
                 help();
             }
 
             // Parse command-specific options
-            parseOptions();
+            parseOptions(cli);
         }
         catch(ParseException e)
         {
-//GERALD: fix
-            logger.severe("Failed to parse comand line properties: "+e.getClass().getName()+e.getMessage());
+            logger.severe("Error parsing command line: "+e.getClass().getName()+e.getMessage());
             help();
         }
+
+        // Execute the command
+        execute();
     }
 
     /**
      * Parse the command-specific options.
+     * @param cli The parsed command line
      */
-    protected abstract void parseOptions();
+    protected abstract void parseOptions(CommandLine cli);
+
+    /**
+     * Execute the command using the command line parameters.
+     */
+    protected abstract void execute();
 
     /**
      * Print out the help statement.
@@ -109,7 +124,7 @@ public abstract class BaseCommand
     protected void help()
     {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("Main", options);
+        formatter.printHelp("New Relic Command Line", options);
         System.exit(0);
     }
 }

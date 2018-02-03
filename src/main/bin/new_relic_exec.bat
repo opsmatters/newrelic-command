@@ -1,10 +1,24 @@
-REM GERALD: banner
+@echo off
+REM ********************************************************************************
+REM *                                                                              *
+REM *  DESCRIPTION                                                                 *
+REM *    Executes a New Relic operation using command line options                 *
+REM *                                                                              *
+REM *  AUTHOR                                                                      *
+REM *    Gerald CURLEY (opsmatters)                                                *
+REM *                                                                              *
+REM *  DATE                                                                        *
+REM *    03/02/2018                                                                *
+REM *                                                                              *
+REM ********************************************************************************
 
-rem SET CP=.
-rem SET CP=%CP%;newrelic-command-0.1.0.jar
-rem SET CP=%CP%;newrelic-api-1.0.2.jar
-rem SET CP=%CP%;commons-cli-1.4.jar
+REM Check for JAVA_HOME being set
+if [%JAVA_HOME%]==[] goto error
 
-REM GERALD: check for JAVA_HOME being set
+REM Execute the command
+%JAVA_HOME%\bin\java -classpath ..\jar\* com.opsmatters.newrelic.executor.NewRelicExecutor %*
+goto :eof
 
-%JAVA_HOME%\bin\java -classpath ..\jar\* com.opsmatters.newrelic.commands.NewRelicExecutor -v=test
+:error
+@echo ERROR: JAVA_HOME not set
+exit /B 1
