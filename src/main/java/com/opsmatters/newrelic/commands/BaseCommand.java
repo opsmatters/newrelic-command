@@ -175,6 +175,16 @@ public abstract class BaseCommand
     }
 
     /**
+     * Log the value of an option.
+     * @param option The option to be logged
+     * @param value The value of the option
+     */
+    protected void logOptionValue(String option, long value)
+    {
+        logOptionValue(option, Long.toString(value));
+    }
+
+    /**
      * Create the REST API client.
      * @return The REST API client
      */
