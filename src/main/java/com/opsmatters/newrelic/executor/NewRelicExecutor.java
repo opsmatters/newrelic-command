@@ -79,7 +79,7 @@ public class NewRelicExecutor
                 str.append(",");
             str.append(command.getName());
         }
-        System.err.println("  "+str.toString());
+        System.err.println(str.toString());
     }
 
     /**

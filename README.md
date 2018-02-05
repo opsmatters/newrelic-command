@@ -11,7 +11,7 @@ Java library that allows New Relic Monitoring and Alerting configuration operati
 
 To execute a command:
 ```
->$ new_relic_exec.sh create_alert_policy -key "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" -name my-policy -incident_preference PER_POLICY
+>$ new_relic_exec.sh create_alert_policy -key "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" -name my-policy -i PER_POLICY
 ```
 A message similar to the following is displayed if the command completes successfully:
 ```
@@ -26,9 +26,9 @@ This produces a listing similar to:
 ```
 usage: create_alert_policy
  -h,--help                        Prints a usage statement
- -i,--incident_preference <arg>   The incident preference of the alert policy.
+ -i,--incident-preference <arg>   The incident preference of the alert policy.
                                   Optional, defaults to PER_POLICY.
- -k,--key <arg>                   The New Relic API key for the account or user
+ -x,--x-api-key <arg>             The New Relic API key for the account or user
  -n,--name <arg>                  The name of the alert policy
  -v,--verbose                     Enables verbose logging messages
 ```
@@ -40,10 +40,14 @@ To see the complete list of commands supported:
 The complete list of commands supported is:
 ```
 create_alert_policy
+create_campfire_channel
 create_email_channel
 create_hipchat_channel
 create_opsgenie_channel
+create_pagerduty_channel
 create_slack_channel
+create_user_channel
+create_victorops_channel
 ```
 Other commands can be included on request.
 

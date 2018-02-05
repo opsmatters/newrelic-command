@@ -36,7 +36,7 @@ public abstract class BaseCommand
 
     protected String[] args;
     protected Options options = new Options();
-    protected String key;
+    protected String apiKey;
     protected boolean verbose = false;
 
     /**
@@ -70,7 +70,7 @@ public abstract class BaseCommand
     {
         options.addOption("h", "help", false, "Prints a usage statement");
         options.addOption("v", "verbose", false, "Enables verbose logging messages");
-        options.addOption("k", "key", true, "The New Relic API key for the account or user");
+        options.addOption("x", "x_api_key", true, "The New Relic API key for the account or user");
     }
 
     /**
@@ -98,14 +98,14 @@ public abstract class BaseCommand
             }
 
             // API key option
-            if(cli.hasOption("k"))
+            if(cli.hasOption("x"))
             {
-                key = cli.getOptionValue("k");
-                logOptionValue("key", key);
+                apiKey = cli.getOptionValue("x");
+                logOptionValue("x_api_key", apiKey);
             }
             else
             {
-                logger.severe("\"key\" option is missing");
+                logger.severe("\"x_api_key\" option is missing");
                 help();
             }
 
@@ -184,7 +184,7 @@ public abstract class BaseCommand
             logger.info("Creating REST API client");
 
         return NewRelicApi.builder()
-            .apiKey(key)
+            .apiKey(apiKey)
             .build();
     }
 }
