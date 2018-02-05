@@ -55,11 +55,13 @@ The complete list of commands supported is:
 * create_victorops_channel
 * delete_alert_channel
 * delete_alert_channels
+* list_alert_channels
 
 ### Alert Policies
 * create_alert_policy
 * delete_alert_policy
 * delete_alert_policies
+* list_alert_policies
 
 Other commands can be included on request.
 
