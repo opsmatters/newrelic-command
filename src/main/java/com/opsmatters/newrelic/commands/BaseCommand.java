@@ -154,6 +154,16 @@ public abstract class BaseCommand
     }
 
     /**
+     * Log an invalid option.
+     * @param option The option that is invalid
+     */
+    protected void logOptionInvalid(String option)
+    {
+        logger.severe("\""+option+"\" option is invalid");
+        help();
+    }
+
+    /**
      * Log the value of an option.
      * @param option The option to be logged
      * @param value The value of the option

@@ -84,7 +84,12 @@ public class CreateAlertPolicy extends BaseCommand
         if(cli.hasOption("i"))
         {
             incidentPreference = cli.getOptionValue("i");
-            logOptionValue("incident_preference", incidentPreference);
+
+            // Check the value is valid
+            if(IncidentPreference.contains(incidentPreference))
+                logOptionValue("incident_preference", incidentPreference);
+            else
+                logOptionInvalid("incident_preference");
         }
     }
 

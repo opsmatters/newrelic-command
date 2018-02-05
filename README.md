@@ -63,6 +63,9 @@ The complete list of commands supported is:
 * delete_alert_policies
 * list_alert_policies
 
+### Alert Conditions
+* create_alert_condition
+
 Other commands can be included on request.
 
 ## Prerequisites

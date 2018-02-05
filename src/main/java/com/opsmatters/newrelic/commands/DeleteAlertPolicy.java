@@ -18,6 +18,7 @@ package com.opsmatters.newrelic.commands;
 
 import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
+import com.google.common.base.Optional;
 import com.opsmatters.newrelic.api.NewRelicApi;
 import com.opsmatters.newrelic.api.model.alerts.policies.AlertPolicy;
 
@@ -87,8 +88,9 @@ public class DeleteAlertPolicy extends BaseCommand
 
         if(verbose)
             logger.info("Getting alert policy: "+id);
-        AlertPolicy policy = api.alertPolicies().show(id).get();
-        if(policy == null)
+
+        Optional<AlertPolicy> policy = api.alertPolicies().show(id);
+        if(!policy.isPresent())
         {
             logger.severe("Unable to find alert policy: "+id);
             return;
@@ -97,7 +99,8 @@ public class DeleteAlertPolicy extends BaseCommand
         if(verbose)
             logger.info("Deleting alert policy: "+id);
 
-        api.alertPolicies().delete(policy.getId());
-        logger.info("Deleted alert policy: "+policy.getId()+" - "+policy.getName());
+        AlertPolicy p = policy.get();
+        api.alertPolicies().delete(p.getId());
+        logger.info("Deleted alert policy: "+p.getId()+" - "+p.getName());
     }
 }

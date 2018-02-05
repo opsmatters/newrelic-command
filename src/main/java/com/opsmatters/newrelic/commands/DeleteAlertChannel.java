@@ -18,6 +18,7 @@ package com.opsmatters.newrelic.commands;
 
 import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
+import com.google.common.base.Optional;
 import com.opsmatters.newrelic.api.NewRelicApi;
 import com.opsmatters.newrelic.api.model.alerts.channels.AlertChannel;
 
@@ -87,8 +88,9 @@ public class DeleteAlertChannel extends BaseCommand
 
         if(verbose)
             logger.info("Getting alert channel: "+id);
-        AlertChannel channel = api.alertChannels().show(id).get();
-        if(channel == null)
+
+        Optional<AlertChannel> channel = api.alertChannels().show(id);
+        if(!channel.isPresent())
         {
             logger.severe("Unable to find alert channel: "+id);
             return;
@@ -97,7 +99,8 @@ public class DeleteAlertChannel extends BaseCommand
         if(verbose)
             logger.info("Deleting  alert channel: "+id);
 
-        api.alertChannels().delete(channel.getId());
-        logger.info("Deleted alert channel: "+channel.getId()+" - "+channel.getName());
+        AlertChannel c = channel.get();
+        api.alertChannels().delete(c.getId());
+        logger.info("Deleted alert channel: "+c.getId()+" - "+c.getName());
     }
 }
