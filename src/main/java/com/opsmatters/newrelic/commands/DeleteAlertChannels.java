@@ -17,7 +17,6 @@
 package com.opsmatters.newrelic.commands;
 
 import java.util.Collection;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import com.opsmatters.newrelic.api.NewRelicApi;
