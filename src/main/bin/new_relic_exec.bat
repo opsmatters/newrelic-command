@@ -16,7 +16,7 @@ REM Check for JAVA_HOME being set
 if [%JAVA_HOME%]==[] goto error
 
 REM Execute the command
-%JAVA_HOME%\bin\java -classpath ..\jar\* com.opsmatters.newrelic.executor.NewRelicExecutor %*
+%JAVA_HOME%\bin\java -classpath "..\jar\*" com.opsmatters.newrelic.executor.NewRelicExecutor %*
 goto :eof
 
 :error
