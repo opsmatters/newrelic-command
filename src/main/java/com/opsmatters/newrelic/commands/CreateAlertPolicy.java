@@ -27,73 +27,73 @@ import com.opsmatters.newrelic.api.model.alerts.policies.AlertPolicy;
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class CreateAlertPolicyCommand extends BaseCommand
+public class CreateAlertPolicy extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(CreateAlertPolicyCommand.class.getName());
+    private static final Logger logger = Logger.getLogger(CreateAlertPolicy.class.getName());
+    private static final String NAME = "create_alert_policy";
 
     private String name;
     private String incidentPreference = IncidentPreference.PER_POLICY.name();
 
     /**
-     * Constructor that takes a list of arguments.
-     * @param args The argument list
+     * Default constructor.
      */
-    public CreateAlertPolicyCommand(String[] args)
+    public CreateAlertPolicy()
     {
-        super(args);
         options();
     }
 
     /**
-     * Set the options.
+     * Returns the name of the command.
+     * @return The name of the command
      */
-    public void options()
+    public String getName()
+    {
+        return NAME;
+    }
+
+    /**
+     * Sets the options for the command.
+     */
+    @Override
+    protected void options()
     {
         super.options();
-
         options.addOption("n", "name", true, "The name of the alert policy");
-        options.addOption("i", "incident_preference", true, "The incident preference of the alert policy");
+        options.addOption("i", "incident_preference", true, "The incident preference of the alert policy. Optional, defaults to PER_POLICY.");
     }
 
     /**
      * Parse the command-specific options.
      * @param cli The parsed command line
      */
-    protected void parseOptions(CommandLine cli)
+    protected void parse(CommandLine cli)
     {
         // Name option
         if(cli.hasOption("n"))
         {
             name = cli.getOptionValue("n");
-            if(verbose)
-                logger.info("Using name: "+name);
+            logOptionValue("name", name);
         }
         else
         {
-            logger.severe("\"name\" option is missing");
-            help();
+            logOptionMissing("name");
         }
 
         // Incident preference option
         if(cli.hasOption("i"))
         {
             incidentPreference = cli.getOptionValue("i");
-            if(verbose)
-                logger.info("Using incident preference: "+incidentPreference);
+            logOptionValue("incident_preference", incidentPreference);
         }
     }
 
     /**
      * Create the alert policy.
      */
-    protected void execute()
+    protected void operation()
     {
-        if(verbose)
-            logger.info("Creating REST API client");
-
-        NewRelicApi api = NewRelicApi.builder()
-            .apiKey(apiKey)
-            .build();
+        NewRelicApi api = getApi();
 
         if(verbose)
             logger.info("Creating alert policy: "+name);

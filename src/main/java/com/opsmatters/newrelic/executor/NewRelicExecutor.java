@@ -16,7 +16,12 @@
 
 package com.opsmatters.newrelic.executor;
 
-import com.opsmatters.newrelic.commands.*;
+import java.io.IOException;
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.Set;
+import com.google.common.reflect.ClassPath;
+import com.opsmatters.newrelic.commands.BaseCommand;
 
 /**
  * Processes a New Relic command line execution.  
@@ -25,6 +30,8 @@ import com.opsmatters.newrelic.commands.*;
  */
 public class NewRelicExecutor
 {
+    private static Map<String,BaseCommand> commands = new LinkedHashMap<String,BaseCommand>();
+
     /**
      * Entry point that selects the command to execute.
      * @param args The argument list
@@ -33,28 +40,84 @@ public class NewRelicExecutor
     {
         System.setProperty("java.util.logging.config.file","logging.properties");
 
+        // Load all the commands
+        loadCommands();
+
         // Exit if no arguments provided
         if(args.length == 0)
         {
             System.err.println("ERROR: No command provided");
+            help();
             System.exit(1);
         }
 
         // Otherwise execute the command
-        String command = args[0];
-        switch(command)
+        String commandName = args[0];
+        BaseCommand command = commands.get(commandName);
+        if(command != null)
         {
-            case "create_email_channel":
-                new CreateEmailChannelCommand(args).parse();
-                break;
-            case "create_alert_policy":
-                new CreateAlertPolicyCommand(args).parse();
-                break;
-            default:
-                System.err.println("ERROR: Unknown command: "+command);
-                System.err.println("The supported commands are:");
-                System.err.println("  create_email_channel, create_alert_policy");
-                System.exit(1);
+            command.args(args).parse();
+        }
+        else // Invalid command name
+        {
+            System.err.println("ERROR: Unknown command: "+commandName);
+            help();
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Displays the supported operations.
+     */
+    private static void help()
+    {
+        System.err.println("The supported commands are:");
+        StringBuilder str = new StringBuilder();
+        for(BaseCommand command : commands.values())
+        {
+            if(str.length() > 0)
+                str.append(",");
+            str.append(command.getName());
+        }
+        System.err.println("  "+str.toString());
+    }
+
+    /**
+     * Load the commands from the package.
+     */
+    private static void loadCommands()
+    {
+        try
+        {
+            ClassLoader loader = ClassLoader.getSystemClassLoader();
+            Set<ClassPath.ClassInfo> classes = ClassPath.from(loader).getTopLevelClasses("com.opsmatters.newrelic.commands");
+            for(ClassPath.ClassInfo ci : classes)
+            {
+                Class cl = Class.forName(ci.getName());
+                if(BaseCommand.class.isAssignableFrom(cl))
+                {
+                    try
+                    {
+                        BaseCommand command = BaseCommand.class.cast(cl.newInstance());
+                        commands.put(command.getName(), command);
+                    }
+                    catch(InstantiationException e)
+                    {
+                    }
+                }
+            }
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        catch(ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch(IllegalAccessException e)
+        {
+            e.printStackTrace();
         }
     }
 }

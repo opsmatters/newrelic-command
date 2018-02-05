@@ -9,7 +9,44 @@ Java library that allows New Relic Monitoring and Alerting configuration operati
 
 ## Examples
 
-TBC
+To execute a command:
+```
+>$ new_relic_exec.sh create_alert_policy -key "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" -name my-policy -incident_preference PER_POLICY
+```
+A message similar to the following is displayed if the command completes successfully:
+```
+2018-02-05 02:41:40:941 INFO Created alert policy: 187641 - my-policy
+```
+
+To see the complete list of commands supported:
+```
+>$ new_relic_exec.sh
+```
+
+To see the options for a particular command:
+```
+>$ new_relic_exec.sh create_alert_policy -h
+```
+This produces a listing similar to:
+```
+usage: create_alert_policy
+ -h,--help                        Prints a usage statement
+ -i,--incident_preference <arg>   The incident preference of the alert policy.
+                                  Optional, defaults to PER_POLICY.
+ -k,--key <arg>                   The New Relic API key for the account or user
+ -n,--name <arg>                  The name of the alert policy
+ -v,--verbose                     Enables verbose logging messages
+```
+
+The complete list of commands supported is:
+```
+create_alert_policy
+create_email_channel
+create_hipchat_channel
+create_opsgenie_channel
+create_slack_channel
+```
+Other commands can be included on request.
 
 ## Prerequisites
 

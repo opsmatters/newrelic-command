@@ -23,95 +23,93 @@ import com.opsmatters.newrelic.api.model.alerts.channels.AlertChannel;
 import com.opsmatters.newrelic.api.model.alerts.channels.EmailChannel;
 
 /**
- * Implements the New Relic command line option to create an email alert channel.  
+ * Implements the New Relic command line option to create an Email alert channel.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class CreateEmailChannelCommand extends BaseCommand
+public class CreateEmailChannel extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(CreateEmailChannelCommand.class.getName());
+    private static final Logger logger = Logger.getLogger(CreateEmailChannel.class.getName());
+    private static final String NAME = "create_email_channel";
 
     private String name;
     private String recipients;
     private boolean includeJsonAttachment = false;
 
     /**
-     * Constructor that takes a list of arguments.
-     * @param args The argument list
+     * Default constructor.
      */
-    public CreateEmailChannelCommand(String[] args)
+    public CreateEmailChannel()
     {
-        super(args);
         options();
     }
 
     /**
-     * Set the options.
+     * Returns the name of the command.
+     * @return The name of the command
      */
-    public void options()
+    public String getName()
+    {
+        return NAME;
+    }
+
+    /**
+     * Sets the options for the command.
+     */
+    @Override
+    protected void options()
     {
         super.options();
-
         options.addOption("n", "name", true, "The name of the alert channel");
         options.addOption("r", "recipients", true, "The email recipients of the alert channel");
-        options.addOption("i", "include_json_attachment", false, "Include the details with the message as a JSON attachment");
+        options.addOption("i", "include_json_attachment", false, "Include the details with the message as a JSON attachment. Optional, defaults to false.");
     }
 
     /**
      * Parse the command-specific options.
      * @param cli The parsed command line
      */
-    protected void parseOptions(CommandLine cli)
+    protected void parse(CommandLine cli)
     {
         // Name option
         if(cli.hasOption("n"))
         {
             name = cli.getOptionValue("n");
-            if(verbose)
-                logger.info("Using name: "+name);
+            logOptionValue("name", name);
         }
         else
         {
-            logger.severe("\"name\" option is missing");
-            help();
+            logOptionMissing("name");
         }
 
         // Recipients option
         if(cli.hasOption("r"))
         {
             recipients = cli.getOptionValue("r");
-            if(verbose)
-                logger.info("Using recipients: "+recipients);
+            logOptionValue("recipients", recipients);
         }
         else
         {
-            logger.severe("\"recipients\" option is missing");
-            help();
+            logOptionMissing("recipients");
         }
 
         // IncludeJsonAttachment option
         if(cli.hasOption("i"))
         {
             includeJsonAttachment = true;
-            if(verbose)
-                logger.info("Using includeJsonAttachment: "+includeJsonAttachment);
+            logOptionValue("includeJsonAttachment", includeJsonAttachment);
         }
     }
 
     /**
-     * Create the email alert channel.
+     * Create the Email alert channel.
      */
-    protected void execute()
+    protected void operation()
     {
-        if(verbose)
-            logger.info("Creating REST API client");
-
-        NewRelicApi api = NewRelicApi.builder()
-            .apiKey(apiKey)
-            .build();
+        NewRelicApi api = getApi();
 
         if(verbose)
-            logger.info("Creating email channel: "+name);
+            logger.info("Creating Email channel: "+name);
 
         EmailChannel c = EmailChannel.builder()
             .name(name)
@@ -120,6 +118,6 @@ public class CreateEmailChannelCommand extends BaseCommand
             .build();
 
         AlertChannel channel = api.alertChannels().create(c).get();
-        logger.info("Created email channel: "+channel.getId()+" - "+channel.getName());
+        logger.info("Created Email channel: "+channel.getId()+" - "+channel.getName());
     }
 }

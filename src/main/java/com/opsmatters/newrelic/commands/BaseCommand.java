@@ -23,6 +23,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import com.opsmatters.newrelic.api.NewRelicApi;
 
 /**
  * Implements the New Relic create alert command line option.  
@@ -35,26 +36,41 @@ public abstract class BaseCommand
 
     protected String[] args;
     protected Options options = new Options();
-    protected String apiKey;
+    protected String key;
     protected boolean verbose = false;
 
     /**
-     * Constructor that takes a list of arguments.
-     * @param args The argument list
+     * Default constructor.
      */
-    public BaseCommand(String[] args)
+    public BaseCommand()
     {
-        this.args = args;
     }
 
     /**
-     * Set the options.
+     * Returns the name of the command.
+     * @return The name of the command
      */
-    public void options()
+    public abstract String getName();
+
+    /**
+     * Sets the list of arguments for the command.
+     * @param args The argument list
+     * @return This object
+     */
+    public BaseCommand args(String[] args)
+    {
+        this.args = args;
+        return this;
+    }
+
+    /**
+     * Sets the default options for the command.
+     */
+    protected void options()
     {
         options.addOption("h", "help", false, "Prints a usage statement");
         options.addOption("v", "verbose", false, "Enables verbose logging messages");
-        options.addOption("a", "api_key", true, "The New Relic API key for the account or user");
+        options.addOption("k", "key", true, "The New Relic API key for the account or user");
     }
 
     /**
@@ -82,20 +98,19 @@ public abstract class BaseCommand
             }
 
             // API key option
-            if(cli.hasOption("a"))
+            if(cli.hasOption("k"))
             {
-                apiKey = cli.getOptionValue("a");
-                if(verbose)
-                    logger.info("Using API key: "+apiKey);
+                key = cli.getOptionValue("k");
+                logOptionValue("key", key);
             }
             else
             {
-                logger.severe("\"api_key\" option is missing");
+                logger.severe("\"key\" option is missing");
                 help();
             }
 
             // Parse command-specific options
-            parseOptions(cli);
+            parse(cli);
         }
         catch(ParseException e)
         {
@@ -103,20 +118,20 @@ public abstract class BaseCommand
             help();
         }
 
-        // Execute the command
-        execute();
+        // Execute the command operation
+        operation();
     }
 
     /**
      * Parse the command-specific options.
      * @param cli The parsed command line
      */
-    protected abstract void parseOptions(CommandLine cli);
+    protected abstract void parse(CommandLine cli);
 
     /**
-     * Execute the command using the command line parameters.
+     * Execute the command operation using the command line parameters.
      */
-    protected abstract void execute();
+    protected abstract void operation();
 
     /**
      * Print out the help statement.
@@ -124,7 +139,52 @@ public abstract class BaseCommand
     protected void help()
     {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("New Relic Command Line", options);
+        formatter.printHelp(getName(), options);
         System.exit(0);
+    }
+
+    /**
+     * Log a missing option.
+     * @param option The option that is missing
+     */
+    protected void logOptionMissing(String option)
+    {
+        logger.severe("\""+option+"\" option is missing");
+        help();
+    }
+
+    /**
+     * Log the value of an option.
+     * @param option The option to be logged
+     * @param value The value of the option
+     */
+    protected void logOptionValue(String option, String value)
+    {
+        if(verbose)
+            logger.info("Using "+option+": "+value);
+    }
+
+    /**
+     * Log the value of an option.
+     * @param option The option to be logged
+     * @param value The value of the option
+     */
+    protected void logOptionValue(String option, boolean value)
+    {
+        logOptionValue(option, Boolean.toString(value));
+    }
+
+    /**
+     * Create the REST API client.
+     * @return The REST API client
+     */
+    protected NewRelicApi getApi()
+    {
+        if(verbose)
+            logger.info("Creating REST API client");
+
+        return NewRelicApi.builder()
+            .apiKey(key)
+            .build();
     }
 }
