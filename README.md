@@ -53,7 +53,6 @@ The complete list of commands supported is:
 * create_slack_channel
 * create_user_channel
 * create_victorops_channel
-* delete_alert_channel
 
 ### Alert Policies
 * create_alert_policy
