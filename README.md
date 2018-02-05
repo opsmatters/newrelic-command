@@ -18,11 +18,6 @@ A message similar to the following is displayed if the command completes success
 2018-02-05 02:41:40:941 INFO Created alert policy: 187641 - my-policy
 ```
 
-To see the complete list of commands supported:
-```
->$ new_relic_exec.sh
-```
-
 To see the options for a particular command:
 ```
 >$ new_relic_exec.sh create_alert_policy -h
@@ -38,6 +33,10 @@ usage: create_alert_policy
  -v,--verbose                     Enables verbose logging messages
 ```
 
+To see the complete list of commands supported:
+```
+>$ new_relic_exec.sh
+```
 The complete list of commands supported is:
 ```
 create_alert_policy
