@@ -21,17 +21,17 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import com.opsmatters.newrelic.api.NewRelicApi;
-import com.opsmatters.newrelic.api.model.alerts.channels.AlertChannel;
+import com.opsmatters.newrelic.api.model.alerts.policies.AlertPolicy;
 
 /**
- * Implements the New Relic command line option to delete an alert channel.  
+ * Implements the New Relic command line option to delete an alert policy.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class DeleteAlertChannel extends BaseCommand
+public class DeleteAlertPolicy extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(DeleteAlertChannel.class.getName());
-    private static final String NAME = "delete_alert_channel";
+    private static final Logger logger = Logger.getLogger(DeleteAlertPolicy.class.getName());
+    private static final String NAME = "delete_alert_policy";
 
     private String name;
     private Long id;
@@ -39,7 +39,7 @@ public class DeleteAlertChannel extends BaseCommand
     /**
      * Default constructor.
      */
-    public DeleteAlertChannel()
+    public DeleteAlertPolicy()
     {
         options();
     }
@@ -60,8 +60,8 @@ public class DeleteAlertChannel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert channel");
-        options.addOption("i", "id", true, "The id of the alert channel");
+        options.addOption("n", "name", true, "The name of the alert policy");
+        options.addOption("i", "id", true, "The id of the alert policy");
     }
 
     /**
@@ -95,48 +95,48 @@ public class DeleteAlertChannel extends BaseCommand
     }
 
     /**
-     * Delete the alert channel.
+     * Delete the alert policy.
      */
     protected void operation()
     {
         NewRelicApi api = getApi();
 
-        Collection<AlertChannel> channels = null;
+        Collection<AlertPolicy> policies = null;
         if(id == null)
         {
             if(verbose)
-                logger.info("Getting alert channels: "+name);
-            channels = api.alertChannels().list(name);
-            if(channels != null && channels.size() > 0)
+                logger.info("Getting alert policies: "+name);
+            policies = api.alertPolicies().list(name);
+            if(policies != null && policies.size() > 0)
             {
                 if(verbose)
-                    logger.info("Found "+channels.size()+" alert channel(s)");
+                    logger.info("Found "+policies.size()+" alert policie(s)");
             }
         }
         else
         {
             if(verbose)
-                logger.info("Getting alert channel: "+id);
-            AlertChannel channel = api.alertChannels().show(id).get();
-            channels = new ArrayList<AlertChannel>();
+                logger.info("Getting alert policy: "+id);
+            AlertPolicy policy = api.alertPolicies().show(id).get();
+            policies = new ArrayList<AlertPolicy>();
             if(verbose)
-                logger.info("Found alert channel: "+channel.getId()+" - "+channel.getName());
-            channels.add(channel);
+                logger.info("Found alert policy: "+policy.getId()+" - "+policy.getName());
+            policies.add(policy);
         }
 
-        if(channels == null || channels.size() == 0)
+        if(policies == null || policies.size() == 0)
         {
-            logger.severe("Unable to find alert channels: "+(id != null ? id : name));
+            logger.severe("Unable to find alert policies: "+(id != null ? id : name));
             return;
         }
 
         if(verbose)
-            logger.info("Deleting "+channels.size()+" alert channel(s): "+(id != null ? id : name));
+            logger.info("Deleting "+policies.size()+" alert policie(s): "+(id != null ? id : name));
 
-        for(AlertChannel channel : channels)
+        for(AlertPolicy policy : policies)
         {
-            api.alertChannels().delete(channel.getId());
-            logger.info("Deleted alert channel: "+channel.getId()+" - "+channel.getName());
+            api.alertPolicies().delete(policy.getId());
+            logger.info("Deleted alert policy: "+policy.getId()+" - "+policy.getName());
         }
     }
 }

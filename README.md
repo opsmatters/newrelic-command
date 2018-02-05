@@ -57,6 +57,7 @@ The complete list of commands supported is:
 
 ### Alert Policies
 * create_alert_policy
+* delete_alert_policy
 
 Other commands can be included on request.
 
