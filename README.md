@@ -26,9 +26,9 @@ This produces a listing similar to:
 ```
 usage: create_alert_policy
  -h,--help                        Prints a usage statement
- -i,--incident-preference <arg>   The incident preference of the alert policy.
+ -i,--incident_preference <arg>   The incident preference of the alert policy.
                                   Optional, defaults to PER_POLICY.
- -x,--x-api-key <arg>             The New Relic API key for the account or user
+ -x,--x_api_key <arg>             The New Relic API key for the account or user
  -n,--name <arg>                  The name of the alert policy
  -v,--verbose                     Enables verbose logging messages
 ```
