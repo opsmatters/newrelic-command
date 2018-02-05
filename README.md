@@ -9,6 +9,10 @@ Java library that allows New Relic Monitoring and Alerting configuration operati
 
 ## Examples
 
+The following scripts can be found in the "bin" directory of the distribution:
+* new_relic_exec.sh (for Linux)
+* new_relic_exec.bat (for Windows)
+
 To execute a command:
 ```
 >$ new_relic_exec.sh create_alert_policy -key "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" -name my-policy -i PER_POLICY
@@ -37,18 +41,22 @@ To see the complete list of commands supported:
 ```
 >$ new_relic_exec.sh
 ```
+
 The complete list of commands supported is:
-```
-create_alert_policy
-create_campfire_channel
-create_email_channel
-create_hipchat_channel
-create_opsgenie_channel
-create_pagerduty_channel
-create_slack_channel
-create_user_channel
-create_victorops_channel
-```
+
+### Alert Channels
+* create_campfire_channel
+* create_email_channel
+* create_hipchat_channel
+* create_opsgenie_channel
+* create_pagerduty_channel
+* create_slack_channel
+* create_user_channel
+* create_victorops_channel
+
+### Alert Policies
+* create_alert_policy
+
 Other commands can be included on request.
 
 ## Prerequisites
