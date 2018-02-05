@@ -33,7 +33,6 @@ public class DeleteAlertChannel extends BaseCommand
     private static final Logger logger = Logger.getLogger(DeleteAlertChannel.class.getName());
     private static final String NAME = "delete_alert_channel";
 
-    private String name;
     private Long id;
 
     /**
@@ -60,7 +59,6 @@ public class DeleteAlertChannel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert channel");
         options.addOption("i", "id", true, "The id of the alert channel");
     }
 
@@ -70,27 +68,15 @@ public class DeleteAlertChannel extends BaseCommand
      */
     protected void parse(CommandLine cli)
     {
-        // Name option
-        if(cli.hasOption("n"))
-        {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-
         // ID option
         if(cli.hasOption("i"))
         {
             id = Long.parseLong(cli.getOptionValue("i"));
             logOptionValue("id", id);
         }
-
-        // Check that either the id or name has been provided
-        if(name == null && id == null)
+        else
         {
-            if(name == null)
-                logOptionMissing("name");
-            if(id == null)
-                logOptionMissing("id");
+            logOptionMissing("id");
         }
     }
 
@@ -101,42 +87,19 @@ public class DeleteAlertChannel extends BaseCommand
     {
         NewRelicApi api = getApi();
 
-        Collection<AlertChannel> channels = null;
-        if(id == null)
+        if(verbose)
+            logger.info("Getting alert channel: "+id);
+        AlertChannel channel = api.alertChannels().show(id).get();
+        if(channel == null)
         {
-            if(verbose)
-                logger.info("Getting alert channels: "+name);
-            channels = api.alertChannels().list(name);
-            if(channels != null && channels.size() > 0)
-            {
-                if(verbose)
-                    logger.info("Found "+channels.size()+" alert channel(s)");
-            }
-        }
-        else
-        {
-            if(verbose)
-                logger.info("Getting alert channel: "+id);
-            AlertChannel channel = api.alertChannels().show(id).get();
-            channels = new ArrayList<AlertChannel>();
-            if(verbose)
-                logger.info("Found alert channel: "+channel.getId()+" - "+channel.getName());
-            channels.add(channel);
-        }
-
-        if(channels == null || channels.size() == 0)
-        {
-            logger.severe("Unable to find alert channels: "+(id != null ? id : name));
+            logger.severe("Unable to find alert channel: "+id);
             return;
         }
 
         if(verbose)
-            logger.info("Deleting "+channels.size()+" alert channel(s): "+(id != null ? id : name));
+            logger.info("Deleting  alert channel: "+id);
 
-        for(AlertChannel channel : channels)
-        {
-            api.alertChannels().delete(channel.getId());
-            logger.info("Deleted alert channel: "+channel.getId()+" - "+channel.getName());
-        }
+        api.alertChannels().delete(channel.getId());
+        logger.info("Deleted alert channel: "+channel.getId()+" - "+channel.getName());
     }
 }

@@ -24,21 +24,21 @@ import com.opsmatters.newrelic.api.NewRelicApi;
 import com.opsmatters.newrelic.api.model.alerts.policies.AlertPolicy;
 
 /**
- * Implements the New Relic command line option to delete an alert policy.  
+ * Implements the New Relic command line option to delete alert policies.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class DeleteAlertPolicy extends BaseCommand
+public class DeleteAlertPolicies extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(DeleteAlertPolicy.class.getName());
-    private static final String NAME = "delete_alert_policy";
+    private static final Logger logger = Logger.getLogger(DeleteAlertPolicies.class.getName());
+    private static final String NAME = "delete_alert_policies";
 
-    private Long id;
+    private String name;
 
     /**
      * Default constructor.
      */
-    public DeleteAlertPolicy()
+    public DeleteAlertPolicies()
     {
         options();
     }
@@ -59,7 +59,7 @@ public class DeleteAlertPolicy extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("i", "id", true, "The id of the alert policy");
+        options.addOption("n", "name", true, "The name of the alert policies");
     }
 
     /**
@@ -68,38 +68,41 @@ public class DeleteAlertPolicy extends BaseCommand
      */
     protected void parse(CommandLine cli)
     {
-        // ID option
-        if(cli.hasOption("i"))
+        // Name option
+        if(cli.hasOption("n"))
         {
-            id = Long.parseLong(cli.getOptionValue("i"));
-            logOptionValue("id", id);
+            name = cli.getOptionValue("n");
+            logOptionValue("name", name);
         }
         else
         {
-            logOptionMissing("id");
+            logOptionMissing("name");
         }
     }
 
     /**
-     * Delete the alert policy.
+     * Delete the alert policies.
      */
     protected void operation()
     {
         NewRelicApi api = getApi();
 
         if(verbose)
-            logger.info("Getting alert policy: "+id);
-        AlertPolicy policy = api.alertPolicies().show(id).get();
-        if(policy == null)
+            logger.info("Getting alert policies: "+name);
+        Collection<AlertPolicy> policies = api.alertPolicies().list(name);
+        if(policies.size() == 0)
         {
-            logger.severe("Unable to find alert policy: "+id);
+            logger.severe("Unable to find alert policies: "+name);
             return;
         }
 
         if(verbose)
-            logger.info("Deleting alert policy: "+id);
+            logger.info("Deleting "+policies.size()+" alert policies: "+name);
 
-        api.alertPolicies().delete(policy.getId());
-        logger.info("Deleted alert policy: "+policy.getId()+" - "+policy.getName());
+        for(AlertPolicy policy : policies)
+        {
+            api.alertPolicies().delete(policy.getId());
+            logger.info("Deleted alert policy: "+policy.getId()+" - "+policy.getName());
+        }
     }
 }
