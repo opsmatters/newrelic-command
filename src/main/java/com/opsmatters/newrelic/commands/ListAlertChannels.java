@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import com.opsmatters.newrelic.api.NewRelicApi;
 import com.opsmatters.newrelic.api.model.alerts.channels.AlertChannel;
+import com.opsmatters.newrelic.api.model.alerts.channels.ChannelType;
 
 /**
  * Implements the New Relic command line option to list alert channels.  
@@ -33,6 +34,7 @@ public class ListAlertChannels extends BaseCommand
     private static final String NAME = "list_alert_channels";
 
     private String name;
+    private String type;
 
     /**
      * Default constructor.
@@ -59,6 +61,7 @@ public class ListAlertChannels extends BaseCommand
     {
         super.options();
         options.addOption("n", "name", true, "The name of the alert channels");
+        options.addOption("t", "type", true, "The type of the alert channels");
     }
 
     /**
@@ -73,9 +76,17 @@ public class ListAlertChannels extends BaseCommand
             name = cli.getOptionValue("n");
             logOptionValue("name", name);
         }
-        else
+
+        // Type option
+        if(cli.hasOption("t"))
         {
-            logOptionMissing("name");
+            type = cli.getOptionValue("t");
+
+            // Check the value is valid
+            if(ChannelType.contains(type))
+                logOptionValue("type", type);
+            else
+                logOptionInvalid("type");
         }
     }
 
@@ -87,8 +98,8 @@ public class ListAlertChannels extends BaseCommand
         NewRelicApi api = getApi();
 
         if(verbose)
-            logger.info("Getting alert channels: "+name);
-        Collection<AlertChannel> channels = api.alertChannels().list(name);
+            logger.info("Getting alert channels: "+name+(type != null ? " ("+type+")":""));
+        Collection<AlertChannel> channels = api.alertChannels().list(name, type);
         if(verbose)
             logger.info("Found "+channels.size()+" alert channels");
         for(AlertChannel channel : channels)
