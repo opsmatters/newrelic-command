@@ -24,6 +24,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import com.opsmatters.newrelic.api.NewRelicApi;
+import com.opsmatters.newrelic.api.NewRelicInfraApi;
 
 /**
  * Implements the New Relic create alert command line option.  
@@ -204,6 +205,20 @@ public abstract class BaseCommand
             logger.info("Creating REST API client");
 
         return NewRelicApi.builder()
+            .apiKey(apiKey)
+            .build();
+    }
+
+    /**
+     * Create the Infrastructure API client.
+     * @return The Infrastructure API client
+     */
+    protected NewRelicInfraApi getInfraApi()
+    {
+        if(verbose)
+            logger.info("Creating Infra API client");
+
+        return NewRelicInfraApi.builder()
             .apiKey(apiKey)
             .build();
     }

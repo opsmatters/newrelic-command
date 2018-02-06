@@ -15,7 +15,7 @@ The following scripts can be found in the "bin" directory of the distribution:
 
 To execute a command:
 ```
->$ new_relic_exec.sh create_alert_policy -key "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" -name my-policy -i PER_POLICY
+>$ new_relic_exec.sh create_alert_policy -key "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" -name my-policy -ip PER_POLICY
 ```
 A message similar to the following is displayed if the command completes successfully:
 ```
@@ -30,7 +30,7 @@ This produces a listing similar to:
 ```
 usage: create_alert_policy
  -h,--help                        Prints a usage statement
- -i,--incident_preference <arg>   The incident preference of the alert policy.
+ -ip,--incident_preference <arg>  The incident preference of the alert policy.
                                   Optional, defaults to PER_POLICY.
  -x,--x_api_key <arg>             The New Relic API key for the account or user
  -n,--name <arg>                  The name of the alert policy
@@ -66,12 +66,18 @@ The complete list of commands supported is:
 ### Alert Conditions
 * create_alert_condition
 * create_nrql_alert_condition
+* create_infra_metric_alert_condition
+* create_infra_host_alert_condition
+* create_infra_process_alert_condition
 * delete_alert_condition
 * delete_alert_conditions
 * delete_nrql_alert_condition
 * delete_nrql_alert_conditions
+* delete_infra_alert_condition
+* delete_infra_alert_conditions
 * list_alert_conditions
 * list_nrql_alert_conditions
+* list_infra_alert_conditions
 
 Other commands can be included on request.
 

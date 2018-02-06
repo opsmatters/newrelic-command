@@ -255,7 +255,7 @@ public class CreateAlertCondition extends BaseCommand
         NewRelicApi api = getApi();
 
         if(verbose)
-            logger.info("Creating alert condition: "+name);
+            logger.info("Getting alert policy: "+policyId);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(policyId);
         if(!policy.isPresent())
@@ -263,6 +263,9 @@ public class CreateAlertCondition extends BaseCommand
             logger.severe("Unable to find alert policy: "+policyId);
             return;
         }
+
+        if(verbose)
+            logger.info("Creating alert condition: "+name);
 
         AlertCondition c = null;
         switch(AlertCondition.ConditionType.fromValue(type))
