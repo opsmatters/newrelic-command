@@ -62,7 +62,7 @@ public class CreateEmailChannel extends BaseCommand
         super.options();
         options.addOption("n", "name", true, "The name of the alert channel");
         options.addOption("r", "recipients", true, "The email recipients of the alert channel");
-        options.addOption("i", "include_json_attachment", false, "Include the details with the message as a JSON attachment. Optional, defaults to false.");
+        options.addOption("ija", "include_json_attachment", false, "Include the details with the message as a JSON attachment. Optional, defaults to false.");
     }
 
     /**
@@ -94,7 +94,7 @@ public class CreateEmailChannel extends BaseCommand
         }
 
         // IncludeJsonAttachment option
-        if(cli.hasOption("i"))
+        if(cli.hasOption("ija"))
         {
             includeJsonAttachment = true;
             logOptionValue("includeJsonAttachment", includeJsonAttachment);

@@ -60,7 +60,7 @@ public class ListAlertConditions extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("i", "policy_id", true, "The policy id of the alert conditions");
+        options.addOption("pi", "policy_id", true, "The policy id of the alert conditions");
     }
 
     /**
@@ -70,9 +70,9 @@ public class ListAlertConditions extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Policy id option
-        if(cli.hasOption("i"))
+        if(cli.hasOption("pi"))
         {
-            policyId = Long.parseLong(cli.getOptionValue("i"));
+            policyId = Long.parseLong(cli.getOptionValue("pi"));
             logOptionValue("policy_id", policyId);
         }
         else

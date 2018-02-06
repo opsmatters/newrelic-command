@@ -63,9 +63,9 @@ public class CreateOpsGenieChannel extends BaseCommand
     {
         super.options();
         options.addOption("n", "name", true, "The name of the alert channel");
-        options.addOption("a", "api_key", true, "The OpsGenie API key");
-        options.addOption("t", "teams", true, "The teams for the OpsGenie channel");
-        options.addOption("g", "tags", true, "The tags for the OpsGenie channel");
+        options.addOption("ak", "api_key", true, "The OpsGenie API key");
+        options.addOption("tm", "teams", true, "The teams for the OpsGenie channel");
+        options.addOption("tg", "tags", true, "The tags for the OpsGenie channel");
         options.addOption("r", "recipients", true, "The recipients of the OpsGenie channel");
     }
 
@@ -87,9 +87,9 @@ public class CreateOpsGenieChannel extends BaseCommand
         }
 
         // API key option
-        if(cli.hasOption("a"))
+        if(cli.hasOption("ak"))
         {
-            apiKey = cli.getOptionValue("a");
+            apiKey = cli.getOptionValue("ak");
             logOptionValue("api_key", apiKey);
         }
         else
@@ -98,9 +98,9 @@ public class CreateOpsGenieChannel extends BaseCommand
         }
 
         // Teams option
-        if(cli.hasOption("t"))
+        if(cli.hasOption("tm"))
         {
-            teams = cli.getOptionValue("t");
+            teams = cli.getOptionValue("tm");
             logOptionValue("teams", teams);
         }
         else
@@ -109,9 +109,9 @@ public class CreateOpsGenieChannel extends BaseCommand
         }
 
         // Tags option
-        if(cli.hasOption("g"))
+        if(cli.hasOption("tg"))
         {
-            tags = cli.getOptionValue("g");
+            tags = cli.getOptionValue("tg");
             logOptionValue("tags", tags);
         }
         else

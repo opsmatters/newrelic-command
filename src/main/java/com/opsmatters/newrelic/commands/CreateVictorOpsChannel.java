@@ -62,7 +62,7 @@ public class CreateVictorOpsChannel extends BaseCommand
         super.options();
         options.addOption("n", "name", true, "The name of the alert channel");
         options.addOption("k", "key", true, "The key for the VictorOps channel");
-        options.addOption("r", "route_key", true, "The route key of the VictorOps channel");
+        options.addOption("rk", "route_key", true, "The route key of the VictorOps channel");
     }
 
     /**
@@ -94,9 +94,9 @@ public class CreateVictorOpsChannel extends BaseCommand
         }
 
         // Route key option
-        if(cli.hasOption("r"))
+        if(cli.hasOption("rk"))
         {
-            routeKey = cli.getOptionValue("r");
+            routeKey = cli.getOptionValue("rk");
             logOptionValue("route_key", routeKey);
         }
         else

@@ -60,7 +60,7 @@ public class CreateAlertPolicy extends BaseCommand
     {
         super.options();
         options.addOption("n", "name", true, "The name of the alert policy");
-        options.addOption("i", "incident_preference", true, "The incident preference of the alert policy. Optional, defaults to PER_POLICY.");
+        options.addOption("ip", "incident_preference", true, "The incident preference of the alert policy. Optional, defaults to PER_POLICY.");
     }
 
     /**
@@ -81,9 +81,9 @@ public class CreateAlertPolicy extends BaseCommand
         }
 
         // Incident preference option
-        if(cli.hasOption("i"))
+        if(cli.hasOption("ip"))
         {
-            incidentPreference = cli.getOptionValue("i");
+            incidentPreference = cli.getOptionValue("ip");
 
             // Check the value is valid
             if(IncidentPreference.contains(incidentPreference))

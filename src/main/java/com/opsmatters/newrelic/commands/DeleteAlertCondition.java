@@ -60,7 +60,7 @@ public class DeleteAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("p", "policy_id", true, "The id of the policy for the alert condition");
+        options.addOption("pi", "policy_id", true, "The id of the policy for the alert condition");
         options.addOption("i", "id", true, "The id of the alert condition");
     }
 
@@ -71,9 +71,9 @@ public class DeleteAlertCondition extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Policy id option
-        if(cli.hasOption("p"))
+        if(cli.hasOption("pi"))
         {
-            policyId = Long.parseLong(cli.getOptionValue("p"));
+            policyId = Long.parseLong(cli.getOptionValue("pi"));
             logOptionValue("policy_id", policyId);
         }
         else

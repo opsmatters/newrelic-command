@@ -61,7 +61,7 @@ public class CreateHipChatChannel extends BaseCommand
     {
         super.options();
         options.addOption("n", "name", true, "The name of the alert channel");
-        options.addOption("a", "auth_token", true, "The auth token for the HipChat channel");
+        options.addOption("at", "auth_token", true, "The auth token for the HipChat channel");
         options.addOption("r", "room", true, "The HipChat room");
     }
 
@@ -83,9 +83,9 @@ public class CreateHipChatChannel extends BaseCommand
         }
 
         // Auth token option
-        if(cli.hasOption("a"))
+        if(cli.hasOption("at"))
         {
-            authToken = cli.getOptionValue("a");
+            authToken = cli.getOptionValue("at");
             logOptionValue("auth_token", authToken);
         }
         else

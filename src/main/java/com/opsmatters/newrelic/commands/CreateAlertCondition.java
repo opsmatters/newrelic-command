@@ -81,14 +81,14 @@ public class CreateAlertCondition extends BaseCommand
         super.options();
         options.addOption("n", "name", true, "The name of the alert condition");
         options.addOption("t", "type", true, "The type of the alert condition");
-        options.addOption("i", "policy_id", true, "The id of the policy for the alert condition");
+        options.addOption("pi", "policy_id", true, "The id of the policy for the alert condition");
         options.addOption("m", "metric", true, "The metric of the condition, depends on the type");
         options.addOption("s", "scope", true, "The scope of the condition, either \"instance\" or \"application\"");
         options.addOption("p", "priority", true, "The priority of the condition, either \"critical\" or \"warning\"");
-        options.addOption("c", "violation_close_timer", true, "The violation close timer of the condition, either 1, 2, 4, 8, 12, or 24 hours, defaults to 24 hours");
+        options.addOption("vct", "violation_close_timer", true, "The violation close timer of the condition, either 1, 2, 4, 8, 12, or 24 hours, defaults to 24 hours");
         options.addOption("d", "duration", true, "The duration of the condition, either 5, 10, 15, 30, 60, or 120 minutes");
-        options.addOption("f", "time_function", true, "The time_function of the condition, either \"all\" or \"any\", defaults to \"all\"");
-        options.addOption("r", "threshold", true, "The threshold of the condition");
+        options.addOption("tf", "time_function", true, "The time_function of the condition, either \"all\" or \"any\", defaults to \"all\"");
+        options.addOption("th", "threshold", true, "The threshold of the condition");
         options.addOption("o", "operator", true, "The operator of the condition, either \"above\", \"below\", or \"equal\"");
     }
 
@@ -126,9 +126,9 @@ public class CreateAlertCondition extends BaseCommand
         }
 
         // Policy id option
-        if(cli.hasOption("i"))
+        if(cli.hasOption("pi"))
         {
-            policyId = Long.parseLong(cli.getOptionValue("i"));
+            policyId = Long.parseLong(cli.getOptionValue("pi"));
             logOptionValue("policy_id", policyId);
         }
         else
@@ -180,9 +180,9 @@ public class CreateAlertCondition extends BaseCommand
         }
 
         // Violation close timer option
-        if(cli.hasOption("c"))
+        if(cli.hasOption("vct"))
         {
-            violationCloseTimer = Integer.parseInt(cli.getOptionValue("c"));
+            violationCloseTimer = Integer.parseInt(cli.getOptionValue("vct"));
 
             // Check the value is valid
             if(AlertCondition.ViolationCloseTimerInterval.contains(violationCloseTimer))
@@ -208,9 +208,9 @@ public class CreateAlertCondition extends BaseCommand
         }
 
         // Time function option
-        if(cli.hasOption("f"))
+        if(cli.hasOption("tf"))
         {
-            timeFunction = cli.getOptionValue("f");
+            timeFunction = cli.getOptionValue("tf");
 
             // Check the value is valid
             if(TimeFunction.contains(timeFunction))
@@ -220,9 +220,9 @@ public class CreateAlertCondition extends BaseCommand
         }
 
         // Threshold option
-        if(cli.hasOption("r"))
+        if(cli.hasOption("th"))
         {
-            threshold = cli.getOptionValue("r");
+            threshold = cli.getOptionValue("th");
             logOptionValue("threshold", threshold);
         }
         else

@@ -60,7 +60,7 @@ public class CreatePagerDutyChannel extends BaseCommand
     {
         super.options();
         options.addOption("n", "name", true, "The name of the alert channel");
-        options.addOption("s", "service_key", true, "The service key for the PagerDuty channel");
+        options.addOption("sk", "service_key", true, "The service key for the PagerDuty channel");
     }
 
     /**
@@ -81,9 +81,9 @@ public class CreatePagerDutyChannel extends BaseCommand
         }
 
         // Service key option
-        if(cli.hasOption("s"))
+        if(cli.hasOption("sk"))
         {
-            serviceKey = cli.getOptionValue("s");
+            serviceKey = cli.getOptionValue("sk");
             logOptionValue("service_key", serviceKey);
         }
         else
