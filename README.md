@@ -96,6 +96,11 @@ The complete list of commands supported is:
 * remove_alert_policy_channel
 * list_alert_policy_channels
 
+### Alert Entity Conditions
+* add_application_alert_condition
+* remove_application_alert_condition
+* list_application_alert_conditions
+
 Other commands can be included on request.
 
 ## Prerequisites
