@@ -18,29 +18,28 @@ package com.opsmatters.newrelic.commands;
 
 import java.util.Collection;
 import java.util.logging.Logger;
-import org.apache.commons.cli.CommandLine;
 import com.google.common.base.Optional;
+import org.apache.commons.cli.CommandLine;
 import com.opsmatters.newrelic.api.NewRelicApi;
 import com.opsmatters.newrelic.api.model.alerts.policies.AlertPolicy;
-import com.opsmatters.newrelic.api.model.alerts.conditions.AlertCondition;
+import com.opsmatters.newrelic.api.model.alerts.channels.AlertChannel;
 
 /**
- * Implements the New Relic command line option to delete alert conditions.  
+ * Implements the New Relic command line option to list the channels for an alert policy.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class DeleteAlertConditions extends BaseCommand
+public class ListAlertPolicyChannels extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(DeleteAlertConditions.class.getName());
-    private static final String NAME = "delete_alert_conditions";
+    private static final Logger logger = Logger.getLogger(ListAlertPolicyChannels.class.getName());
+    private static final String NAME = "list_alert_policy_channels";
 
     private long policyId;
-    private String name;
 
     /**
      * Default constructor.
      */
-    public DeleteAlertConditions()
+    public ListAlertPolicyChannels()
     {
         options();
     }
@@ -61,8 +60,7 @@ public class DeleteAlertConditions extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("pi", "policy_id", true, "The id of the policy for the alert conditions");
-        options.addOption("n", "name", true, "The name of the alert conditions");
+        options.addOption("pi", "policy_id", true, "The id of the alert policy");
     }
 
     /**
@@ -81,26 +79,14 @@ public class DeleteAlertConditions extends BaseCommand
         {
             logOptionMissing("policy_id");
         }
-
-        // Name option
-        if(cli.hasOption("n"))
-        {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
-        }
     }
 
     /**
-     * Delete the alert conditions.
+     * List the channels for the alert policy.
      */
     protected void operation()
     {
         NewRelicApi api = getApi();
-
         if(verbose)
             logger.info("Getting alert policy: "+policyId);
 
@@ -112,22 +98,11 @@ public class DeleteAlertConditions extends BaseCommand
         }
 
         if(verbose)
-            logger.info("Getting alert conditions: "+name);
-
-        Collection<AlertCondition> conditions = api.alertConditions().list(policyId, name);
-        if(conditions.size() == 0)
-        {
-            logger.severe("Unable to find alert conditions: "+name);
-            return;
-        }
-
+            logger.info("Getting alert channels for policy: "+policyId);
+        Collection<AlertChannel> channels = api.alertChannels().list(policyId);
         if(verbose)
-            logger.info("Deleting "+conditions.size()+" alert conditions: "+name);
-
-        for(AlertCondition condition : conditions)
-        {
-            api.alertConditions().delete(condition.getId());
-            logger.info("Deleted alert condition: "+condition.getId()+" - "+condition.getName());
-        }
+            logger.info("Found "+channels.size()+" alert channels for policy: "+policyId);
+        for(AlertChannel channel : channels)
+            logger.info(channel.getId()+" - "+channel.getName()+" ("+channel.getType()+")");
     }
 }

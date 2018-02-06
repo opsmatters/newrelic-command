@@ -16,31 +16,30 @@
 
 package com.opsmatters.newrelic.commands;
 
-import java.util.Collection;
 import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import com.google.common.base.Optional;
 import com.opsmatters.newrelic.api.NewRelicApi;
 import com.opsmatters.newrelic.api.model.alerts.policies.AlertPolicy;
-import com.opsmatters.newrelic.api.model.alerts.conditions.AlertCondition;
+import com.opsmatters.newrelic.api.model.alerts.channels.AlertChannel;
 
 /**
- * Implements the New Relic command line option to delete alert conditions.  
+ * Implements the New Relic command line option to remove an alert channel from an alert policy.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class DeleteAlertConditions extends BaseCommand
+public class RemoveAlertPolicyChannel extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(DeleteAlertConditions.class.getName());
-    private static final String NAME = "delete_alert_conditions";
+    private static final Logger logger = Logger.getLogger(RemoveAlertPolicyChannel.class.getName());
+    private static final String NAME = "remove_alert_policy_channel";
 
-    private long policyId;
-    private String name;
+    private Long policyId;
+    private Long channelId;
 
     /**
      * Default constructor.
      */
-    public DeleteAlertConditions()
+    public RemoveAlertPolicyChannel()
     {
         options();
     }
@@ -61,8 +60,8 @@ public class DeleteAlertConditions extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("pi", "policy_id", true, "The id of the policy for the alert conditions");
-        options.addOption("n", "name", true, "The name of the alert conditions");
+        options.addOption("pi", "policy_id", true, "The id of the alert policy");
+        options.addOption("ci", "channel_id", true, "The id of the alert channel");
     }
 
     /**
@@ -82,20 +81,20 @@ public class DeleteAlertConditions extends BaseCommand
             logOptionMissing("policy_id");
         }
 
-        // Name option
-        if(cli.hasOption("n"))
+        // Channel id option
+        if(cli.hasOption("ci"))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
+            channelId = Long.parseLong(cli.getOptionValue("ci"));
+            logOptionValue("channel_id", channelId);
         }
         else
         {
-            logOptionMissing("name");
+            logOptionMissing("channel_id");
         }
     }
 
     /**
-     * Delete the alert conditions.
+     * Remove the channel from the alert policy.
      */
     protected void operation()
     {
@@ -112,22 +111,20 @@ public class DeleteAlertConditions extends BaseCommand
         }
 
         if(verbose)
-            logger.info("Getting alert conditions: "+name);
+            logger.info("Getting alert channel: "+channelId);
 
-        Collection<AlertCondition> conditions = api.alertConditions().list(policyId, name);
-        if(conditions.size() == 0)
+        Optional<AlertChannel> channel = api.alertChannels().show(channelId);
+        if(!channel.isPresent())
         {
-            logger.severe("Unable to find alert conditions: "+name);
+            logger.severe("Unable to find alert channel: "+channelId);
             return;
         }
 
+        AlertPolicy p = policy.get();
+        AlertChannel c = channel.get();
         if(verbose)
-            logger.info("Deleting "+conditions.size()+" alert conditions: "+name);
-
-        for(AlertCondition condition : conditions)
-        {
-            api.alertConditions().delete(condition.getId());
-            logger.info("Deleted alert condition: "+condition.getId()+" - "+condition.getName());
-        }
+            logger.info("Removing alert channel "+c.getId()+" from policy "+p.getId());
+        api.alertPolicyChannels().delete(p.getId(), c.getId());
+        logger.info("Removed alert channel: "+c.getId()+" - "+c.getName()+" from policy: "+p.getId()+" - "+p.getName());
     }
 }

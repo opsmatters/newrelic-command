@@ -95,7 +95,7 @@ public class DeleteNrqlAlertConditions extends BaseCommand
     }
 
     /**
-     * Delete the alert condition.
+     * Delete the alert conditions.
      */
     protected void operation()
     {

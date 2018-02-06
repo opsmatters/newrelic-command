@@ -73,10 +73,6 @@ public class ListAlertPolicies extends BaseCommand
             name = cli.getOptionValue("n");
             logOptionValue("name", name);
         }
-        else
-        {
-            logOptionMissing("name");
-        }
     }
 
     /**

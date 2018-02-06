@@ -91,6 +91,11 @@ The complete list of commands supported is:
 * list_plugins_alert_conditions
 * list_infra_alert_conditions
 
+### Alert Policy Channels
+* add_alert_policy_channel
+* remove_alert_policy_channel
+* list_alert_policy_channels
+
 Other commands can be included on request.
 
 ## Prerequisites
@@ -133,7 +138,7 @@ Add the following dependency to include the artefact within your project:
 <dependency>
   <groupId>com.opsmatters</groupId>
   <artifactId>newrelic-command</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
 </dependency>
 ```
 

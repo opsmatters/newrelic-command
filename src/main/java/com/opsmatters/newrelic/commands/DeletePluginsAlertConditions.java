@@ -95,7 +95,7 @@ public class DeletePluginsAlertConditions extends BaseCommand
     }
 
     /**
-     * Delete the alert condition.
+     * Delete the alert conditions.
      */
     protected void operation()
     {
