@@ -68,6 +68,7 @@ The complete list of commands supported is:
 * create_nrql_alert_condition
 * create_synthetics_alert_condition
 * create_external_service_alert_condition
+* create_plugins_alert_condition
 * create_infra_metric_alert_condition
 * create_infra_host_alert_condition
 * create_infra_process_alert_condition
@@ -79,12 +80,15 @@ The complete list of commands supported is:
 * delete_synthetics_alert_conditions
 * delete_external_service_alert_condition
 * delete_external_service_alert_conditions
+* delete_plugins_alert_condition
+* delete_plugins_alert_conditions
 * delete_infra_alert_condition
 * delete_infra_alert_conditions
 * list_alert_conditions
 * list_nrql_alert_conditions
 * list_synthetics_alert_conditions
 * list_external_service_alert_conditions
+* list_plugins_alert_conditions
 * list_infra_alert_conditions
 
 Other commands can be included on request.
