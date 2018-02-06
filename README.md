@@ -65,6 +65,9 @@ The complete list of commands supported is:
 
 ### Alert Conditions
 * create_alert_condition
+* delete_alert_condition
+* delete_alert_conditions
+* list_alert_conditions
 
 Other commands can be included on request.
 
