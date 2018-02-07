@@ -13,7 +13,7 @@ The following scripts can be found in the "bin" directory of the distribution:
 * new_relic_exec.sh (for Linux)
 * new_relic_exec.bat (for Windows)
 
-To execute a command:
+To execute a command provide the operation required as the **first** parameter:
 ```
 >$ new_relic_exec.sh create_alert_policy -key "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" -name my-policy -ip PER_POLICY
 ```
@@ -98,8 +98,11 @@ The complete list of commands supported is:
 
 ### Alert Entity Conditions
 * add_application_alert_condition
+* add_browser_application_alert_condition
 * remove_application_alert_condition
+* remove_browser_application_alert_condition
 * list_application_alert_conditions
+* list_browser_application_alert_conditions
 
 Other commands can be included on request.
 
