@@ -125,6 +125,11 @@ The complete list of commands supported is:
 * list_mobile_applications
 * list_key_transactions
 
+### Deployments
+* create_deployment
+* delete_deployment
+* list_deployments
+
 ### Servers
 * delete_server
 * list_servers
