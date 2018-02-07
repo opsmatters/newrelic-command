@@ -125,11 +125,6 @@ The complete list of commands supported is:
 * list_mobile_applications
 * list_key_transactions
 
-### Deployments
-* create_deployment
-* delete_deployment
-* list_deployments
-
 ### Servers
 * delete_server
 * list_servers
@@ -161,6 +156,17 @@ To compile the source code, run all tests, and generate all artefacts (including
 ```
 mvn package 
 ```
+
+## Running the tests
+
+To execute the unit tests:
+```
+mvn clean test 
+```
+
+The following tests are included:
+
+* TBC
 
 ## Deployment
 

@@ -60,7 +60,7 @@ public class ListUsers extends BaseCommand
     {
         super.options();
         options.addOption("n", "name", true, "The name of the users");
-        options.addOption("r", "role", true, "The role of the users, either \"owner\", \"admin\", \"user\" or \"restricted\"");
+        options.addOption("r", "role", true, "The role of the users");
     }
 
     /**
