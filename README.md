@@ -5,7 +5,9 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.opsmatters/newrelic-command/badge.svg?style=blue)](https://maven-badges.herokuapp.com/maven-central/com.opsmatters/newrelic-command)
 [![Javadocs](http://javadoc.io/badge/com.opsmatters/newrelic-command.svg)](http://javadoc.io/doc/com.opsmatters/newrelic-command)
 
-Java library that allows New Relic Monitoring and Alerting configuration operations to be executed from the command line.
+Java library that allows New Relic Monitoring and Alerting configuration operations to be executed from a command line.
+The library includes over 60 operations covering Alerts, Applications, Deployments and Monitors. 
+It provides a set of tools to simplify or automate the configuration of New Relic Monitoring and Alerting.
 
 ## Examples
 
