@@ -100,12 +100,15 @@ The complete list of commands supported is:
 * add_application_alert_condition
 * add_browser_application_alert_condition
 * add_mobile_application_alert_condition
+* add_server_alert_condition
 * remove_application_alert_condition
 * remove_browser_application_alert_condition
 * remove_mobile_application_alert_condition
+* remove_server_alert_condition
 * list_application_alert_conditions
 * list_browser_application_alert_conditions
 * list_mobile_application_alert_conditions
+* list_server_alert_conditions
 
 Other commands can be included on request.
 
