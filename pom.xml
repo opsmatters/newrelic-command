@@ -2,11 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.opsmatters</groupId>
   <artifactId>newrelic-command</artifactId>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>New Relic Command Line</name>
   <description>
-    Java library that allows New Relic Monitoring and Alerting configuration operations to be executed from the command line.
+    Java library that allows New Relic Monitoring and Alerting configuration operations to be executed from a command line.
+    The library includes over 60 operations covering Alerts, Applications, Deployments and Monitors. 
+    It provides a set of tools to simplify or automate the configuration of New Relic Monitoring and Alerting.
   </description>
   <url>https://github.com/opsmatters/newrelic-command</url>
 
@@ -27,7 +29,7 @@
     <url>https://github.com/opsmatters/newrelic-command</url>
     <connection>scm:git:https://github.com/opsmatters/newrelic-command.git</connection>
     <developerConnection>scm:git:https://github.com/opsmatters/newrelic-command.git</developerConnection>
-    <tag>newrelic-command-0.1.0</tag>
+    <tag>newrelic-command-0.2.0</tag>
   </scm>
 
   <developers>
@@ -259,7 +261,7 @@ built.on=${TODAY}
 <dependency>
   <groupId>com.opsmatters</groupId>
   <artifactId>newrelic-api</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 </dependency>
 
 <dependency>
