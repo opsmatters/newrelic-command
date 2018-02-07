@@ -118,6 +118,23 @@ The complete list of commands supported is:
 * list_key_transaction_alert_conditions
 * list_plugin_alert_conditions
 
+### Applications
+* delete_application
+* list_applications
+* list_browser_applications
+* list_mobile_applications
+* list_key_transactions
+
+### Servers
+* delete_server
+* list_servers
+
+### Plugins
+* list_plugins
+
+### Users
+* list_users
+
 Other commands can be included on request.
 
 ## Prerequisites
