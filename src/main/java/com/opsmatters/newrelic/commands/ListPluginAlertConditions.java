@@ -21,25 +21,25 @@ import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import com.google.common.base.Optional;
 import com.opsmatters.newrelic.api.NewRelicApi;
-import com.opsmatters.newrelic.api.model.applications.MobileApplication;
+import com.opsmatters.newrelic.api.model.plugins.Plugin;
 import com.opsmatters.newrelic.api.model.alerts.conditions.AlertCondition;
 
 /**
- * Implements the New Relic command line option to list the alert conditions for a mobile application.  
+ * Implements the New Relic command line option to list the alert conditions for a plugin.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class ListMobileApplicationAlertCondition extends BaseCommand
+public class ListPluginAlertConditions extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(ListMobileApplicationAlertCondition.class.getName());
-    private static final String NAME = "list_mobile_application_alert_conditions";
+    private static final Logger logger = Logger.getLogger(ListPluginAlertConditions.class.getName());
+    private static final String NAME = "list_plugin_alert_conditions";
 
-    private Long applicationId;
+    private Long pluginId;
 
     /**
      * Default constructor.
      */
-    public ListMobileApplicationAlertCondition()
+    public ListPluginAlertConditions()
     {
         options();
     }
@@ -60,7 +60,7 @@ public class ListMobileApplicationAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("ai", "application_id", true, "The id of the mobile application");
+        options.addOption("pl", "plugin_id", true, "The id of the plugin");
     }
 
     /**
@@ -69,49 +69,49 @@ public class ListMobileApplicationAlertCondition extends BaseCommand
      */
     protected void parse(CommandLine cli)
     {
-        // Application id option
-        if(cli.hasOption("ai"))
+        // Plugin id option
+        if(cli.hasOption("pl"))
         {
-            applicationId = Long.parseLong(cli.getOptionValue("ai"));
-            logOptionValue("application_id", applicationId);
+            pluginId = Long.parseLong(cli.getOptionValue("pl"));
+            logOptionValue("plugin_id", pluginId);
         }
         else
         {
-            logOptionMissing("application_id");
+            logOptionMissing("plugin_id");
         }
     }
 
     /**
-     * List the alert conditions for the mobile application.
+     * List the alert conditions for the plugin.
      */
     protected void operation()
     {
         NewRelicApi api = getApi();
 
         if(verbose)
-            logger.info("Getting mobile application: "+applicationId);
+            logger.info("Getting plugin: "+pluginId);
 
-        Optional<MobileApplication> application = Optional.absent();
+        Optional<Plugin> plugin = Optional.absent();
         try
         {
-            application = api.mobileApplications().show(applicationId);
+            plugin = api.plugins().show(pluginId, false);
         }
         catch(RuntimeException e)
         {
             // throw 404 if not found
         }
 
-        if(!application.isPresent())
+        if(!plugin.isPresent())
         {
-            logger.severe("Unable to find mobile application: "+applicationId);
+            logger.severe("Unable to find plugin: "+pluginId);
             return;
         }
 
-        MobileApplication a = application.get();
+        Plugin pl = plugin.get();
 
         if(verbose)
-            logger.info("Getting alert conditions for mobile application: "+a.getId());
-        Collection<AlertCondition> conditions = api.alertEntityConditions().list(a);
+            logger.info("Getting alert conditions for plugin: "+pl.getId());
+        Collection<AlertCondition> conditions = api.alertEntityConditions().list(pl);
         if(verbose)
             logger.info("Found "+conditions.size()+" alert conditions");
         for(AlertCondition condition : conditions)

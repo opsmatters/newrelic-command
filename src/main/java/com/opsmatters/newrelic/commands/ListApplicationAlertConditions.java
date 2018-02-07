@@ -21,25 +21,25 @@ import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import com.google.common.base.Optional;
 import com.opsmatters.newrelic.api.NewRelicApi;
-import com.opsmatters.newrelic.api.model.applications.BrowserApplication;
+import com.opsmatters.newrelic.api.model.applications.Application;
 import com.opsmatters.newrelic.api.model.alerts.conditions.AlertCondition;
 
 /**
- * Implements the New Relic command line option to list the alert conditions for a browser application.  
+ * Implements the New Relic command line option to list the alert conditions for an application.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class ListBrowserApplicationAlertCondition extends BaseCommand
+public class ListApplicationAlertConditions extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(ListBrowserApplicationAlertCondition.class.getName());
-    private static final String NAME = "list_browser_application_alert_conditions";
+    private static final Logger logger = Logger.getLogger(ListApplicationAlertConditions.class.getName());
+    private static final String NAME = "list_application_alert_conditions";
 
     private Long applicationId;
 
     /**
      * Default constructor.
      */
-    public ListBrowserApplicationAlertCondition()
+    public ListApplicationAlertConditions()
     {
         options();
     }
@@ -60,7 +60,7 @@ public class ListBrowserApplicationAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("ai", "application_id", true, "The id of the browser application");
+        options.addOption("ai", "application_id", true, "The id of the application");
     }
 
     /**
@@ -82,19 +82,19 @@ public class ListBrowserApplicationAlertCondition extends BaseCommand
     }
 
     /**
-     * List the alert conditions for the browser application.
+     * List the alert conditions for the application.
      */
     protected void operation()
     {
         NewRelicApi api = getApi();
 
         if(verbose)
-            logger.info("Getting browser application: "+applicationId);
+            logger.info("Getting application: "+applicationId);
 
-        Optional<BrowserApplication> application = Optional.absent();
+        Optional<Application> application = Optional.absent();
         try
         {
-            application = api.browserApplications().show(applicationId);
+            application = api.applications().show(applicationId);
         }
         catch(RuntimeException e)
         {
@@ -103,14 +103,14 @@ public class ListBrowserApplicationAlertCondition extends BaseCommand
 
         if(!application.isPresent())
         {
-            logger.severe("Unable to find browser application: "+applicationId);
+            logger.severe("Unable to find application: "+applicationId);
             return;
         }
 
-        BrowserApplication a = application.get();
+        Application a = application.get();
 
         if(verbose)
-            logger.info("Getting alert conditions for browser application: "+a.getId());
+            logger.info("Getting alert conditions for application: "+a.getId());
         Collection<AlertCondition> conditions = api.alertEntityConditions().list(a);
         if(verbose)
             logger.info("Found "+conditions.size()+" alert conditions");

@@ -21,25 +21,25 @@ import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import com.google.common.base.Optional;
 import com.opsmatters.newrelic.api.NewRelicApi;
-import com.opsmatters.newrelic.api.model.applications.Application;
+import com.opsmatters.newrelic.api.model.transactions.KeyTransaction;
 import com.opsmatters.newrelic.api.model.alerts.conditions.AlertCondition;
 
 /**
- * Implements the New Relic command line option to list the alert conditions for an application.  
+ * Implements the New Relic command line option to list the alert conditions for a key transaction.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class ListApplicationAlertCondition extends BaseCommand
+public class ListKeyTransactionAlertConditions extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(ListApplicationAlertCondition.class.getName());
-    private static final String NAME = "list_application_alert_conditions";
+    private static final Logger logger = Logger.getLogger(ListKeyTransactionAlertConditions.class.getName());
+    private static final String NAME = "list_key_transaction_alert_conditions";
 
-    private Long applicationId;
+    private Long transactionId;
 
     /**
      * Default constructor.
      */
-    public ListApplicationAlertCondition()
+    public ListKeyTransactionAlertConditions()
     {
         options();
     }
@@ -60,7 +60,7 @@ public class ListApplicationAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("ai", "application_id", true, "The id of the application");
+        options.addOption("ti", "transaction_id", true, "The id of the key transaction");
     }
 
     /**
@@ -69,49 +69,49 @@ public class ListApplicationAlertCondition extends BaseCommand
      */
     protected void parse(CommandLine cli)
     {
-        // Application id option
-        if(cli.hasOption("ai"))
+        // Transaction id option
+        if(cli.hasOption("ti"))
         {
-            applicationId = Long.parseLong(cli.getOptionValue("ai"));
-            logOptionValue("application_id", applicationId);
+            transactionId = Long.parseLong(cli.getOptionValue("ti"));
+            logOptionValue("transaction_id", transactionId);
         }
         else
         {
-            logOptionMissing("application_id");
+            logOptionMissing("transaction_id");
         }
     }
 
     /**
-     * List the alert conditions for the application.
+     * List the alert conditions for the key transaction.
      */
     protected void operation()
     {
         NewRelicApi api = getApi();
 
         if(verbose)
-            logger.info("Getting application: "+applicationId);
+            logger.info("Getting key transaction: "+transactionId);
 
-        Optional<Application> application = Optional.absent();
+        Optional<KeyTransaction> transaction = Optional.absent();
         try
         {
-            application = api.applications().show(applicationId);
+            transaction = api.keyTransactions().show(transactionId);
         }
         catch(RuntimeException e)
         {
             // throw 404 if not found
         }
 
-        if(!application.isPresent())
+        if(!transaction.isPresent())
         {
-            logger.severe("Unable to find application: "+applicationId);
+            logger.severe("Unable to find key transaction: "+transactionId);
             return;
         }
 
-        Application a = application.get();
+        KeyTransaction t = transaction.get();
 
         if(verbose)
-            logger.info("Getting alert conditions for application: "+a.getId());
-        Collection<AlertCondition> conditions = api.alertEntityConditions().list(a);
+            logger.info("Getting alert conditions for key transaction: "+t.getId());
+        Collection<AlertCondition> conditions = api.alertEntityConditions().list(t);
         if(verbose)
             logger.info("Found "+conditions.size()+" alert conditions");
         for(AlertCondition condition : conditions)

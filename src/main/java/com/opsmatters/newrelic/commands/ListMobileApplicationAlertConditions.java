@@ -21,25 +21,25 @@ import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import com.google.common.base.Optional;
 import com.opsmatters.newrelic.api.NewRelicApi;
-import com.opsmatters.newrelic.api.model.servers.Server;
+import com.opsmatters.newrelic.api.model.applications.MobileApplication;
 import com.opsmatters.newrelic.api.model.alerts.conditions.AlertCondition;
 
 /**
- * Implements the New Relic command line option to list the alert conditions for a server.  
+ * Implements the New Relic command line option to list the alert conditions for a mobile application.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class ListServerAlertCondition extends BaseCommand
+public class ListMobileApplicationAlertConditions extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(ListServerAlertCondition.class.getName());
-    private static final String NAME = "list_server_alert_conditions";
+    private static final Logger logger = Logger.getLogger(ListMobileApplicationAlertConditions.class.getName());
+    private static final String NAME = "list_mobile_application_alert_conditions";
 
-    private Long serverId;
+    private Long applicationId;
 
     /**
      * Default constructor.
      */
-    public ListServerAlertCondition()
+    public ListMobileApplicationAlertConditions()
     {
         options();
     }
@@ -60,7 +60,7 @@ public class ListServerAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("si", "server_id", true, "The id of the server");
+        options.addOption("ai", "application_id", true, "The id of the mobile application");
     }
 
     /**
@@ -69,49 +69,49 @@ public class ListServerAlertCondition extends BaseCommand
      */
     protected void parse(CommandLine cli)
     {
-        // Server id option
-        if(cli.hasOption("si"))
+        // Application id option
+        if(cli.hasOption("ai"))
         {
-            serverId = Long.parseLong(cli.getOptionValue("si"));
-            logOptionValue("server_id", serverId);
+            applicationId = Long.parseLong(cli.getOptionValue("ai"));
+            logOptionValue("application_id", applicationId);
         }
         else
         {
-            logOptionMissing("server_id");
+            logOptionMissing("application_id");
         }
     }
 
     /**
-     * List the alert conditions for the server.
+     * List the alert conditions for the mobile application.
      */
     protected void operation()
     {
         NewRelicApi api = getApi();
 
         if(verbose)
-            logger.info("Getting server: "+serverId);
+            logger.info("Getting mobile application: "+applicationId);
 
-        Optional<Server> server = Optional.absent();
+        Optional<MobileApplication> application = Optional.absent();
         try
         {
-            server = api.servers().show(serverId);
+            application = api.mobileApplications().show(applicationId);
         }
         catch(RuntimeException e)
         {
             // throw 404 if not found
         }
 
-        if(!server.isPresent())
+        if(!application.isPresent())
         {
-            logger.severe("Unable to find server: "+serverId);
+            logger.severe("Unable to find mobile application: "+applicationId);
             return;
         }
 
-        Server s = server.get();
+        MobileApplication a = application.get();
 
         if(verbose)
-            logger.info("Getting alert conditions for server: "+s.getId());
-        Collection<AlertCondition> conditions = api.alertEntityConditions().list(s);
+            logger.info("Getting alert conditions for mobile application: "+a.getId());
+        Collection<AlertCondition> conditions = api.alertEntityConditions().list(a);
         if(verbose)
             logger.info("Found "+conditions.size()+" alert conditions");
         for(AlertCondition condition : conditions)
