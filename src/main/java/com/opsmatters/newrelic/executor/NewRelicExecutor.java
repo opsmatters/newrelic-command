@@ -76,7 +76,8 @@ public class NewRelicExecutor
         for(BaseCommand command : commands.values())
         {
             if(str.length() > 0)
-                str.append(",");
+                str.append("\n");
+            str.append("  ");
             str.append(command.getName());
         }
         System.err.println(str.toString());
