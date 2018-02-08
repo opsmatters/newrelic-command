@@ -25,6 +25,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import com.opsmatters.newrelic.api.NewRelicApi;
 import com.opsmatters.newrelic.api.NewRelicInfraApi;
+import com.opsmatters.newrelic.api.NewRelicSyntheticsApi;
 
 /**
  * Implements the New Relic create alert command line option.  
@@ -196,6 +197,16 @@ public abstract class BaseCommand
     }
 
     /**
+     * Log the value of an option.
+     * @param option The option to be logged
+     * @param value The value of the option
+     */
+    protected void logOptionValue(String option, double value)
+    {
+        logOptionValue(option, Double.toString(value));
+    }
+
+    /**
      * Create the REST API client.
      * @return The REST API client
      */
@@ -219,6 +230,20 @@ public abstract class BaseCommand
             logger.info("Creating Infra API client");
 
         return NewRelicInfraApi.builder()
+            .apiKey(apiKey)
+            .build();
+    }
+
+    /**
+     * Create the Synthetics API client.
+     * @return The Synthetics API client
+     */
+    protected NewRelicSyntheticsApi getSyntheticsApi()
+    {
+        if(verbose)
+            logger.info("Creating Synthetics API client");
+
+        return NewRelicSyntheticsApi.builder()
             .apiKey(apiKey)
             .build();
     }

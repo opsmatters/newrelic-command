@@ -16,29 +16,30 @@
 
 package com.opsmatters.newrelic.commands;
 
+import java.util.Collection;
 import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
-import com.opsmatters.newrelic.api.NewRelicApi;
-import com.opsmatters.newrelic.api.model.alerts.IncidentPreference;
-import com.opsmatters.newrelic.api.model.alerts.policies.AlertPolicy;
+import com.google.common.base.Optional;
+import com.opsmatters.newrelic.api.NewRelicSyntheticsApi;
+import com.opsmatters.newrelic.api.model.synthetics.Monitor;
 
 /**
- * Implements the New Relic command line option to create an alert policy.  
+ * Implements the New Relic command line option to list Synthetics monitors.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class CreateAlertPolicy extends BaseCommand
+public class ListMonitors extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(CreateAlertPolicy.class.getName());
-    private static final String NAME = "create_alert_policy";
+    private static final Logger logger = Logger.getLogger(ListMonitors.class.getName());
+    private static final String NAME = "list_monitors";
 
     private String name;
-    private String incidentPreference = IncidentPreference.PER_POLICY.name();
+    private String type;
 
     /**
      * Default constructor.
      */
-    public CreateAlertPolicy()
+    public ListMonitors()
     {
         options();
     }
@@ -59,8 +60,8 @@ public class CreateAlertPolicy extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert policy");
-        options.addOption("ip", "incident_preference", true, "The incident preference of the alert policy, defaults to PER_POLICY");
+        options.addOption("n", "name", true, "The name of the monitors");
+        options.addOption("t", "type", true, "The type of the monitors, either \"SIMPLE\", \"BROWSER\", \"SCRIPT_BROWSER\" or \"SCRIPT_API\"");
     }
 
     /**
@@ -75,40 +76,33 @@ public class CreateAlertPolicy extends BaseCommand
             name = cli.getOptionValue("n");
             logOptionValue("name", name);
         }
-        else
-        {
-            logOptionMissing("name");
-        }
 
-        // Incident preference option
-        if(cli.hasOption("ip"))
+        // Type option
+        if(cli.hasOption("t"))
         {
-            incidentPreference = cli.getOptionValue("ip");
+            type = cli.getOptionValue("t");
 
             // Check the value is valid
-            if(IncidentPreference.contains(incidentPreference))
-                logOptionValue("incident_preference", incidentPreference);
+            if(Monitor.MonitorType.contains(type))
+                logOptionValue("type", type);
             else
-                logOptionInvalid("incident_preference");
+                logOptionInvalid("type");
         }
     }
 
     /**
-     * Create the alert policy.
+     * List the monitors.
      */
     protected void operation()
     {
-        NewRelicApi api = getApi();
+        NewRelicSyntheticsApi syntheticsApi = getSyntheticsApi();
 
         if(verbose)
-            logger.info("Creating alert policy: "+name);
-
-        AlertPolicy p = AlertPolicy.builder()
-            .name(name)
-            .incidentPreference(incidentPreference)
-            .build();
-
-        AlertPolicy policy = api.alertPolicies().create(p).get();
-        logger.info("Created alert policy: "+policy.getId()+" - "+policy.getName());
+            logger.info("Getting monitors: "+name+(type != null ? " ("+type+")":""));
+        Collection<Monitor> monitors = syntheticsApi.monitors().list(name, type);
+        if(verbose)
+            logger.info("Found "+monitors.size()+" monitors");
+        for(Monitor monitor : monitors)
+            logger.info(monitor.getId()+" - "+monitor.getName()+" ("+monitor.getType()+")");
     }
 }

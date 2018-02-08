@@ -130,12 +130,25 @@ The complete list of commands supported is:
 * delete_deployment
 * list_deployments
 
+### Monitors
+* create_simple_monitor
+* delete_monitor
+* list_monitors
+
 ### Servers
 * delete_server
 * list_servers
 
 ### Plugins
 * list_plugins
+
+### Labels
+* create_label
+* create_monitor_label
+* delete_label
+* delete_monitor_label
+* list_labels
+* list_label_monitors
 
 ### Users
 * list_users

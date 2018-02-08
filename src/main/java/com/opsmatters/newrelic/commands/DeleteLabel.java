@@ -18,27 +18,28 @@ package com.opsmatters.newrelic.commands;
 
 import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
+import com.google.common.base.Optional;
 import com.opsmatters.newrelic.api.NewRelicApi;
-import com.opsmatters.newrelic.api.model.alerts.IncidentPreference;
-import com.opsmatters.newrelic.api.model.alerts.policies.AlertPolicy;
+import com.opsmatters.newrelic.api.model.labels.Label;
 
 /**
- * Implements the New Relic command line option to create an alert policy.  
+ * Implements the New Relic command line option to delete an application label.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class CreateAlertPolicy extends BaseCommand
+public class DeleteLabel extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(CreateAlertPolicy.class.getName());
-    private static final String NAME = "create_alert_policy";
+    private static final Logger logger = Logger.getLogger(DeleteLabel.class.getName());
+    private static final String NAME = "delete_label";
 
+    private String category;
     private String name;
-    private String incidentPreference = IncidentPreference.PER_POLICY.name();
+    private String key;
 
     /**
      * Default constructor.
      */
-    public CreateAlertPolicy()
+    public DeleteLabel()
     {
         options();
     }
@@ -59,8 +60,9 @@ public class CreateAlertPolicy extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert policy");
-        options.addOption("ip", "incident_preference", true, "The incident preference of the alert policy, defaults to PER_POLICY");
+        options.addOption("c", "category", true, "The category of the label");
+        options.addOption("n", "name", true, "The name of the label");
+        options.addOption("k", "key", true, "The key of the label");
     }
 
     /**
@@ -69,46 +71,58 @@ public class CreateAlertPolicy extends BaseCommand
      */
     protected void parse(CommandLine cli)
     {
+        // Category option
+        if(cli.hasOption("c"))
+        {
+            category = cli.getOptionValue("c");
+            logOptionValue("category", category);
+        }
+
         // Name option
         if(cli.hasOption("n"))
         {
             name = cli.getOptionValue("n");
             logOptionValue("name", name);
         }
+
+        // Key option
+        if(cli.hasOption("k"))
+        {
+            key = cli.getOptionValue("k");
+            logOptionValue("key", key);
+        }
+        else if(category != null && name != null)
+        {
+            key = Label.getKey(category,name);
+        }
         else
         {
-            logOptionMissing("name");
-        }
-
-        // Incident preference option
-        if(cli.hasOption("ip"))
-        {
-            incidentPreference = cli.getOptionValue("ip");
-
-            // Check the value is valid
-            if(IncidentPreference.contains(incidentPreference))
-                logOptionValue("incident_preference", incidentPreference);
-            else
-                logOptionInvalid("incident_preference");
+            logOptionMissing("key");
         }
     }
 
     /**
-     * Create the alert policy.
+     * Delete the label.
      */
     protected void operation()
     {
         NewRelicApi api = getApi();
 
         if(verbose)
-            logger.info("Creating alert policy: "+name);
+            logger.info("Getting label: "+key);
 
-        AlertPolicy p = AlertPolicy.builder()
-            .name(name)
-            .incidentPreference(incidentPreference)
-            .build();
+        Optional<Label> label = api.labels().show(key);
+        if(!label.isPresent())
+        {
+            logger.severe("Unable to find label: "+key);
+            return;
+        }
 
-        AlertPolicy policy = api.alertPolicies().create(p).get();
-        logger.info("Created alert policy: "+policy.getId()+" - "+policy.getName());
+        if(verbose)
+            logger.info("Deleting label: "+key);
+
+        Label l = label.get();
+        api.labels().delete(l.getKey());
+        logger.info("Deleted label: "+l.getKey());
     }
 }
