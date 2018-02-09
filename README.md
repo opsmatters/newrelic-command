@@ -135,6 +135,7 @@ The complete list of commands supported is:
 * create_simple_browser_monitor
 * create_scripted_browser_monitor
 * create_scripted_api_monitor
+* update_monitor_script
 * delete_monitor
 * list_monitors
 
