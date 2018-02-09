@@ -19,25 +19,25 @@ package com.opsmatters.newrelic.commands;
 import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import com.google.common.base.Optional;
-import com.opsmatters.newrelic.api.NewRelicSyntheticsApi;
-import com.opsmatters.newrelic.api.model.synthetics.Monitor;
+import com.opsmatters.newrelic.api.NewRelicApi;
+import com.opsmatters.newrelic.api.model.insights.Dashboard;
 
 /**
- * Implements the New Relic command line option to delete a Synthetics monitor.  
+ * Implements the New Relic command line option to delete an Insights dashboard.  
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class DeleteMonitor extends BaseCommand
+public class DeleteDashboard extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(DeleteMonitor.class.getName());
-    private static final String NAME = "delete_monitor";
+    private static final Logger logger = Logger.getLogger(DeleteDashboard.class.getName());
+    private static final String NAME = "delete_dashboard";
 
-    private String id;
+    private Long id;
 
     /**
      * Default constructor.
      */
-    public DeleteMonitor()
+    public DeleteDashboard()
     {
         options();
     }
@@ -58,7 +58,7 @@ public class DeleteMonitor extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("i", "id", true, "The id of the monitor");
+        options.addOption("i", "id", true, "The id of the dashboard");
     }
 
     /**
@@ -67,10 +67,10 @@ public class DeleteMonitor extends BaseCommand
      */
     protected void parse(CommandLine cli)
     {
-        // ID option
+        // Dashboard ID option
         if(cli.hasOption("i"))
         {
-            id = cli.getOptionValue("i");
+            id = Long.parseLong(cli.getOptionValue("i"));
             logOptionValue("id", id);
         }
         else
@@ -80,33 +80,24 @@ public class DeleteMonitor extends BaseCommand
     }
 
     /**
-     * Delete the monitor.
+     * Delete the dashboard.
      */
     protected void operation()
     {
-        NewRelicSyntheticsApi syntheticsApi = getSyntheticsApi();
+        NewRelicApi api = getApi();
 
-        Optional<Monitor> monitor = Optional.absent();
-        try
+        Optional<Dashboard> dashboard = api.dashboards().show(id);
+        if(!dashboard.isPresent())
         {
-            monitor = syntheticsApi.monitors().show(id);
-        }
-        catch(RuntimeException e)
-        {
-            // throw 404 if not found
-        }
-
-        if(!monitor.isPresent())
-        {
-            logger.severe("Unable to find monitor: "+id);
+            logger.severe("Unable to find dashboard: "+id);
             return;
         }
 
         if(verbose)
-            logger.info("Deleting monitor: "+id);
+            logger.info("Deleting dashboard: "+id);
 
-        Monitor m = monitor.get();
-        syntheticsApi.monitors().delete(m.getId());
-        logger.info("Deleted monitor: "+m.getId()+" - "+m.getName());
+        Dashboard d = dashboard.get();
+        api.dashboards().delete(d.getId());
+        logger.info("Deleted dashboard: "+d.getId()+" - "+d.getTitle());
     }
 }

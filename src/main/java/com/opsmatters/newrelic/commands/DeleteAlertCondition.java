@@ -34,7 +34,7 @@ public class DeleteAlertCondition extends BaseCommand
     private static final String NAME = "delete_alert_condition";
 
     private long policyId;
-    private Long id;
+    private Long conditionId;
 
     /**
      * Default constructor.
@@ -61,7 +61,7 @@ public class DeleteAlertCondition extends BaseCommand
     {
         super.options();
         options.addOption("pi", "policy_id", true, "The id of the policy for the alert condition");
-        options.addOption("i", "id", true, "The id of the alert condition");
+        options.addOption("ci", "condition_id", true, "The id of the alert condition");
     }
 
     /**
@@ -81,15 +81,15 @@ public class DeleteAlertCondition extends BaseCommand
             logOptionMissing("policy_id");
         }
 
-        // ID option
-        if(cli.hasOption("i"))
+        // Condition ID option
+        if(cli.hasOption("ci"))
         {
-            id = Long.parseLong(cli.getOptionValue("i"));
-            logOptionValue("id", id);
+            conditionId = Long.parseLong(cli.getOptionValue("ci"));
+            logOptionValue("id", conditionId);
         }
         else
         {
-            logOptionMissing("id");
+            logOptionMissing("conditionId");
         }
     }
 
@@ -111,17 +111,17 @@ public class DeleteAlertCondition extends BaseCommand
         }
 
         if(verbose)
-            logger.info("Getting alert condition: "+id);
+            logger.info("Getting alert condition: "+conditionId);
 
-        Optional<AlertCondition> condition = api.alertConditions().show(policyId, id);
+        Optional<AlertCondition> condition = api.alertConditions().show(policyId, conditionId);
         if(!condition.isPresent())
         {
-            logger.severe("Unable to find alert condition: "+id);
+            logger.severe("Unable to find alert condition: "+conditionId);
             return;
         }
 
         if(verbose)
-            logger.info("Deleting alert condition: "+id);
+            logger.info("Deleting alert condition: "+conditionId);
 
         AlertCondition c = condition.get();
         api.alertConditions().delete(c.getId());

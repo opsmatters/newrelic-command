@@ -34,7 +34,7 @@ public class DeleteSyntheticsAlertCondition extends BaseCommand
     private static final String NAME = "delete_synthetics_alert_condition";
 
     private long policyId;
-    private Long id;
+    private Long conditionId;
 
     /**
      * Default constructor.
@@ -61,7 +61,7 @@ public class DeleteSyntheticsAlertCondition extends BaseCommand
     {
         super.options();
         options.addOption("pi", "policy_id", true, "The id of the policy for the alert condition");
-        options.addOption("i", "id", true, "The id of the alert condition");
+        options.addOption("ci", "condition_id", true, "The id of the alert condition");
     }
 
     /**
@@ -81,15 +81,15 @@ public class DeleteSyntheticsAlertCondition extends BaseCommand
             logOptionMissing("policy_id");
         }
 
-        // ID option
-        if(cli.hasOption("i"))
+        // Condition ID option
+        if(cli.hasOption("ci"))
         {
-            id = Long.parseLong(cli.getOptionValue("i"));
-            logOptionValue("id", id);
+            conditionId = Long.parseLong(cli.getOptionValue("ci"));
+            logOptionValue("condition_id", conditionId);
         }
         else
         {
-            logOptionMissing("id");
+            logOptionMissing("condition_id");
         }
     }
 
@@ -111,17 +111,17 @@ public class DeleteSyntheticsAlertCondition extends BaseCommand
         }
 
         if(verbose)
-            logger.info("Getting Synthetics alert condition: "+id);
+            logger.info("Getting Synthetics alert condition: "+conditionId);
 
-        Optional<SyntheticsAlertCondition> condition = api.syntheticsAlertConditions().show(policyId, id);
+        Optional<SyntheticsAlertCondition> condition = api.syntheticsAlertConditions().show(policyId, conditionId);
         if(!condition.isPresent())
         {
-            logger.severe("Unable to find Synthetics alert condition: "+id);
+            logger.severe("Unable to find Synthetics alert condition: "+conditionId);
             return;
         }
 
         if(verbose)
-            logger.info("Deleting Synthetics alert condition: "+id);
+            logger.info("Deleting Synthetics alert condition: "+conditionId);
 
         SyntheticsAlertCondition c = condition.get();
         api.syntheticsAlertConditions().delete(c.getId());

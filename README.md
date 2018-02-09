@@ -131,7 +131,10 @@ The complete list of commands supported is:
 * list_deployments
 
 ### Monitors
-* create_simple_monitor
+* create_ping_monitor
+* create_simple_browser_monitor
+* create_scripted_browser_monitor
+* create_scripted_api_monitor
 * delete_monitor
 * list_monitors
 
@@ -149,6 +152,10 @@ The complete list of commands supported is:
 * delete_monitor_label
 * list_labels
 * list_label_monitors
+
+### Dashboards
+* delete_dashboard
+* list_dashboards
 
 ### Users
 * list_users

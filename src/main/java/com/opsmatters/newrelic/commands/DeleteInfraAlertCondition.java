@@ -35,7 +35,7 @@ public class DeleteInfraAlertCondition extends BaseCommand
     private static final String NAME = "delete_infra_alert_condition";
 
     private long policyId;
-    private Long id;
+    private Long conditionId;
 
     /**
      * Default constructor.
@@ -62,7 +62,7 @@ public class DeleteInfraAlertCondition extends BaseCommand
     {
         super.options();
         options.addOption("pi", "policy_id", true, "The id of the policy for the alert condition");
-        options.addOption("i", "id", true, "The id of the alert condition");
+        options.addOption("ci", "condition_id", true, "The id of the alert condition");
     }
 
     /**
@@ -82,15 +82,15 @@ public class DeleteInfraAlertCondition extends BaseCommand
             logOptionMissing("policy_id");
         }
 
-        // ID option
-        if(cli.hasOption("i"))
+        // Condition ID option
+        if(cli.hasOption("ci"))
         {
-            id = Long.parseLong(cli.getOptionValue("i"));
-            logOptionValue("id", id);
+            conditionId = Long.parseLong(cli.getOptionValue("ci"));
+            logOptionValue("condition_id", conditionId);
         }
         else
         {
-            logOptionMissing("id");
+            logOptionMissing("condition_id");
         }
     }
 
@@ -113,12 +113,12 @@ public class DeleteInfraAlertCondition extends BaseCommand
         }
 
         if(verbose)
-            logger.info("Getting infra alert condition: "+id);
+            logger.info("Getting infra alert condition: "+conditionId);
 
         Optional<InfraAlertCondition> condition = Optional.absent();
         try
         {
-            condition = infraApi.infraAlertConditions().show(id);
+            condition = infraApi.infraAlertConditions().show(conditionId);
         }
         catch(RuntimeException e)
         {
@@ -127,12 +127,12 @@ public class DeleteInfraAlertCondition extends BaseCommand
 
         if(!condition.isPresent())
         {
-            logger.severe("Unable to find infra alert condition: "+id);
+            logger.severe("Unable to find infra alert condition: "+conditionId);
             return;
         }
 
         if(verbose)
-            logger.info("Deleting infra alert condition: "+id);
+            logger.info("Deleting infra alert condition: "+conditionId);
 
         InfraAlertCondition c = condition.get();
         infraApi.infraAlertConditions().delete(c.getId());
