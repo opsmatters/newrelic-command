@@ -6,7 +6,7 @@
 [![Javadocs](http://javadoc.io/badge/com.opsmatters/newrelic-command.svg)](http://javadoc.io/doc/com.opsmatters/newrelic-command)
 
 Java library that allows New Relic Monitoring and Alerting configuration operations to be executed from a command line.
-The library includes over 60 operations covering Alerts, Applications, Deployments and Monitors. 
+The library includes over 90 operations covering Alerts, Applications, Key Transactions, Deployments, Servers, Plugins, Monitors and Labels. 
 It provides a set of tools to simplify or automate the configuration of New Relic Monitoring and Alerting.
 
 ## Examples
@@ -203,7 +203,7 @@ Add the following dependency to include the artefact within your project:
 <dependency>
   <groupId>com.opsmatters</groupId>
   <artifactId>newrelic-command</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
 </dependency>
 ```
 
