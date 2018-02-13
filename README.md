@@ -203,7 +203,7 @@ Add the following dependency to include the artefact within your project:
 <dependency>
   <groupId>com.opsmatters</groupId>
   <artifactId>newrelic-command</artifactId>
-  <version>0.3.0</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
