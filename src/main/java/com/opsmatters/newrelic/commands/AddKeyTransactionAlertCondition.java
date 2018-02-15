@@ -62,9 +62,9 @@ public class AddKeyTransactionAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("ti", "transaction_id", true, "The id of the key transaction");
-        options.addOption("pi", "policy_id", true, "The id of the alert policy");
-        options.addOption("ci", "condition_id", true, "The id of the alert condition");
+        addOption(Opt.TRANSACTION_ID);
+        addOption(Opt.POLICY_ID);
+        addOption(Opt.CONDITION_ID);
     }
 
     /**
@@ -74,47 +74,35 @@ public class AddKeyTransactionAlertCondition extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Transaction id option
-        if(cli.hasOption("ti"))
+        if(hasOption(cli, Opt.TRANSACTION_ID, true))
         {
-            transactionId = Long.parseLong(cli.getOptionValue("ti"));
-            logOptionValue("transaction_id", transactionId);
-        }
-        else
-        {
-            logOptionMissing("transaction_id");
+            transactionId = Long.parseLong(getOptionValue(cli, Opt.TRANSACTION_ID));
+            logOptionValue(Opt.TRANSACTION_ID, transactionId);
         }
 
         // Policy id option
-        if(cli.hasOption("pi"))
+        if(hasOption(cli, Opt.POLICY_ID, true))
         {
-            policyId = Long.parseLong(cli.getOptionValue("pi"));
-            logOptionValue("policy_id", policyId);
-        }
-        else
-        {
-            logOptionMissing("policy_id");
+            policyId = Long.parseLong(getOptionValue(cli, Opt.POLICY_ID));
+            logOptionValue(Opt.POLICY_ID, policyId);
         }
 
         // Condition id option
-        if(cli.hasOption("ci"))
+        if(hasOption(cli, Opt.CONDITION_ID, true))
         {
-            conditionId = Long.parseLong(cli.getOptionValue("ci"));
-            logOptionValue("condition_id", conditionId);
-        }
-        else
-        {
-            logOptionMissing("condition_id");
+            conditionId = Long.parseLong(getOptionValue(cli, Opt.CONDITION_ID));
+            logOptionValue(Opt.CONDITION_ID, conditionId);
         }
     }
 
     /**
      * Add the alert condition to the key transaction.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting key transaction: "+transactionId);
 
         Optional<KeyTransaction> transaction = Optional.absent();
@@ -135,7 +123,7 @@ public class AddKeyTransactionAlertCondition extends BaseCommand
 
         KeyTransaction t = transaction.get();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policy: "+policyId);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(policyId);
@@ -147,7 +135,7 @@ public class AddKeyTransactionAlertCondition extends BaseCommand
 
         AlertPolicy p = policy.get();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert condition: "+conditionId);
 
         Optional<AlertCondition> condition = api.alertConditions().show(p.getId(), conditionId);
@@ -159,7 +147,7 @@ public class AddKeyTransactionAlertCondition extends BaseCommand
 
         AlertCondition c = condition.get();
 
-        if(verbose)
+        if(verbose())
             logger.info("Adding alert condition "+c.getId()+" to key transaction "+t.getId());
         c = api.alertEntityConditions().add(t, c.getId()).get();
         logger.info("Added condition: "+c.getId()+" - "+c.getName()+" to key transaction: "+t.getId()+" - "+t.getName());

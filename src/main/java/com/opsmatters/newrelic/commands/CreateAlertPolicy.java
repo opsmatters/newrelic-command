@@ -59,8 +59,8 @@ public class CreateAlertPolicy extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert policy");
-        options.addOption("ip", "incident_preference", true, "The incident preference of the alert policy, defaults to PER_POLICY");
+        addOption(Opt.NAME, "The name of the alert policy");
+        addOption(Opt.INCIDENT_PREFERENCE);
     }
 
     /**
@@ -70,37 +70,33 @@ public class CreateAlertPolicy extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Incident preference option
-        if(cli.hasOption("ip"))
+        if(hasOption(cli, Opt.INCIDENT_PREFERENCE, false))
         {
-            incidentPreference = cli.getOptionValue("ip");
+            incidentPreference = getOptionValue(cli, Opt.INCIDENT_PREFERENCE);
 
             // Check the value is valid
             if(IncidentPreference.contains(incidentPreference))
-                logOptionValue("incident_preference", incidentPreference);
+                logOptionValue(Opt.INCIDENT_PREFERENCE, incidentPreference);
             else
-                logOptionInvalid("incident_preference");
+                logOptionInvalid(Opt.INCIDENT_PREFERENCE);
         }
     }
 
     /**
      * Create the alert policy.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating alert policy: "+name);
 
         AlertPolicy p = AlertPolicy.builder()

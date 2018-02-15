@@ -58,7 +58,7 @@ public class ListServers extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the servers");
+        addOption(Opt.NAME, "The name of the servers");
     }
 
     /**
@@ -68,24 +68,24 @@ public class ListServers extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, false))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
     }
 
     /**
      * List the servers.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting servers: "+name);
         Collection<Server> servers = api.servers().list(name);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+servers.size()+" servers");
         for(Server server : servers)
             logger.info(server.getId()+" - "+server.getName());

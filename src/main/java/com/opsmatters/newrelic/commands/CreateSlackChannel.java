@@ -60,9 +60,9 @@ public class CreateSlackChannel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert channel");
-        options.addOption("u", "url", true, "The url for the Slack channel");
-        options.addOption("c", "channel", true, "The name of the Slack channel");
+        addOption(Opt.NAME, "The name of the alert channel");
+        addOption(Opt.URL, "The url for the Slack channel");
+        addOption(Opt.CHANNEL);
     }
 
     /**
@@ -72,47 +72,35 @@ public class CreateSlackChannel extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // URL option
-        if(cli.hasOption("u"))
+        if(hasOption(cli, Opt.URL, true))
         {
-            url = cli.getOptionValue("u");
-            logOptionValue("url", url);
-        }
-        else
-        {
-            logOptionMissing("url");
+            url = getOptionValue(cli, Opt.URL);
+            logOptionValue(Opt.URL, url);
         }
 
         // Channel option
-        if(cli.hasOption("c"))
+        if(hasOption(cli, Opt.CHANNEL, true))
         {
-            channel = cli.getOptionValue("c");
-            logOptionValue("channel", channel);
-        }
-        else
-        {
-            logOptionMissing("channel");
+            channel = getOptionValue(cli, Opt.CHANNEL);
+            logOptionValue(Opt.CHANNEL, channel);
         }
     }
 
     /**
      * Create the Slack alert channel.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating Slack channel: "+name);
 
         SlackChannel c = SlackChannel.builder()

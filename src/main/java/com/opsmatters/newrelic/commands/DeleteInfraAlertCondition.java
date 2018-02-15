@@ -61,8 +61,8 @@ public class DeleteInfraAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("pi", "policy_id", true, "The id of the policy for the alert condition");
-        options.addOption("ci", "condition_id", true, "The id of the alert condition");
+        addOption(Opt.POLICY_ID);
+        addOption(Opt.CONDITION_ID);
     }
 
     /**
@@ -72,37 +72,29 @@ public class DeleteInfraAlertCondition extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Policy id option
-        if(cli.hasOption("pi"))
+        if(hasOption(cli, Opt.POLICY_ID, true))
         {
-            policyId = Long.parseLong(cli.getOptionValue("pi"));
-            logOptionValue("policy_id", policyId);
-        }
-        else
-        {
-            logOptionMissing("policy_id");
+            policyId = Long.parseLong(getOptionValue(cli, Opt.POLICY_ID));
+            logOptionValue(Opt.POLICY_ID, policyId);
         }
 
         // Condition ID option
-        if(cli.hasOption("ci"))
+        if(hasOption(cli, Opt.CONDITION_ID, true))
         {
-            conditionId = Long.parseLong(cli.getOptionValue("ci"));
-            logOptionValue("condition_id", conditionId);
-        }
-        else
-        {
-            logOptionMissing("condition_id");
+            conditionId = Long.parseLong(getOptionValue(cli, Opt.CONDITION_ID));
+            logOptionValue(Opt.CONDITION_ID, conditionId);
         }
     }
 
     /**
      * Delete the alert condition.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
         NewRelicInfraApi infraApi = getInfraApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policy: "+policyId);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(policyId);
@@ -112,7 +104,7 @@ public class DeleteInfraAlertCondition extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting infra alert condition: "+conditionId);
 
         Optional<InfraAlertCondition> condition = Optional.absent();
@@ -131,7 +123,7 @@ public class DeleteInfraAlertCondition extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Deleting infra alert condition: "+conditionId);
 
         InfraAlertCondition c = condition.get();

@@ -61,7 +61,7 @@ public class ListInfraAlertConditions extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("pi", "policy_id", true, "The policy id of the alert conditions");
+        addOption(Opt.POLICY_ID);
     }
 
     /**
@@ -71,26 +71,22 @@ public class ListInfraAlertConditions extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Policy id option
-        if(cli.hasOption("pi"))
+        if(hasOption(cli, Opt.POLICY_ID, true))
         {
-            policyId = Long.parseLong(cli.getOptionValue("pi"));
-            logOptionValue("policy_id", policyId);
-        }
-        else
-        {
-            logOptionMissing("policy_id");
+            policyId = Long.parseLong(getOptionValue(cli, Opt.POLICY_ID));
+            logOptionValue(Opt.POLICY_ID, policyId);
         }
     }
 
     /**
      * List the alert conditions.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
         NewRelicInfraApi infraApi = getInfraApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policy: "+policyId);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(policyId);
@@ -102,7 +98,7 @@ public class ListInfraAlertConditions extends BaseCommand
 
         AlertPolicy p = policy.get();
         Collection<InfraAlertCondition> conditions = infraApi.infraAlertConditions().list(p.getId());
-        if(verbose)
+        if(verbose())
             logger.info("Found "+conditions.size()+" infra alert conditions");
         for(InfraAlertCondition condition : conditions)
             logger.info(condition.getId()+" - "+condition.getName());

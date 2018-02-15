@@ -62,9 +62,9 @@ public class RemoveServerAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("si", "server_id", true, "The id of the server");
-        options.addOption("pi", "policy_id", true, "The id of the alert policy");
-        options.addOption("ci", "condition_id", true, "The id of the alert condition");
+        addOption(Opt.SERVER_ID);
+        addOption(Opt.POLICY_ID);
+        addOption(Opt.CONDITION_ID);
     }
 
     /**
@@ -73,48 +73,36 @@ public class RemoveServerAlertCondition extends BaseCommand
      */
     protected void parse(CommandLine cli)
     {
-        // Server id option
-        if(cli.hasOption("si"))
+        // Server ID option
+        if(hasOption(cli, Opt.SERVER_ID, true))
         {
-            serverId = Long.parseLong(cli.getOptionValue("si"));
-            logOptionValue("server_id", serverId);
-        }
-        else
-        {
-            logOptionMissing("server_id");
+            serverId = Long.parseLong(getOptionValue(cli, Opt.SERVER_ID));
+            logOptionValue(Opt.SERVER_ID, serverId);
         }
 
         // Policy id option
-        if(cli.hasOption("pi"))
+        if(hasOption(cli, Opt.POLICY_ID, true))
         {
-            policyId = Long.parseLong(cli.getOptionValue("pi"));
-            logOptionValue("policy_id", policyId);
-        }
-        else
-        {
-            logOptionMissing("policy_id");
+            policyId = Long.parseLong(getOptionValue(cli, Opt.POLICY_ID));
+            logOptionValue(Opt.POLICY_ID, policyId);
         }
 
-        // Condition id option
-        if(cli.hasOption("ci"))
+        // Condition ID option
+        if(hasOption(cli, Opt.CONDITION_ID, true))
         {
-            conditionId = Long.parseLong(cli.getOptionValue("ci"));
-            logOptionValue("condition_id", conditionId);
-        }
-        else
-        {
-            logOptionMissing("condition_id");
+            conditionId = Long.parseLong(getOptionValue(cli, Opt.CONDITION_ID));
+            logOptionValue(Opt.CONDITION_ID, conditionId);
         }
     }
 
     /**
      * Remove the alert condition from the server.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting server: "+serverId);
 
         Optional<Server> server = Optional.absent();
@@ -135,7 +123,7 @@ public class RemoveServerAlertCondition extends BaseCommand
 
         Server s = server.get();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policy: "+policyId);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(policyId);
@@ -147,7 +135,7 @@ public class RemoveServerAlertCondition extends BaseCommand
 
         AlertPolicy p = policy.get();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert condition: "+conditionId);
 
         Optional<AlertCondition> condition = api.alertConditions().show(p.getId(), conditionId);
@@ -159,7 +147,7 @@ public class RemoveServerAlertCondition extends BaseCommand
 
         AlertCondition c = condition.get();
 
-        if(verbose)
+        if(verbose())
             logger.info("Removing alert condition "+c.getId()+" from server "+s.getId());
         api.alertEntityConditions().remove(s, c.getId());
         logger.info("Removed condition: "+c.getId()+" - "+c.getName()+" from server: "+s.getId()+" - "+s.getName());

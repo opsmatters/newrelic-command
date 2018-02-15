@@ -64,9 +64,9 @@ public class UpdateMonitorScript extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("mi", "monitor_id", true, "The id of the monitor");
-        options.addOption("st", "script_text", true, "The text of the monitor script");
-        options.addOption("l", "locations", true, "Comma-separated list of locations and HMACs");
+        addOption(Opt.MONITOR_ID);
+        addOption(Opt.SCRIPT_TEXT);
+        addOption(Opt.LOCATIONS, "Comma-separated list of locations and HMACs");
     }
 
     /**
@@ -75,43 +75,35 @@ public class UpdateMonitorScript extends BaseCommand
      */
     protected void parse(CommandLine cli)
     {
-        // ID option
-        if(cli.hasOption("mi"))
+        // Monitor ID option
+        if(hasOption(cli, Opt.MONITOR_ID, true))
         {
-            monitorId = cli.getOptionValue("mi");
-            logOptionValue("monitor_id", monitorId);
-        }
-        else
-        {
-            logOptionMissing("monitor_id");
+            monitorId = getOptionValue(cli, Opt.MONITOR_ID);
+            logOptionValue(Opt.MONITOR_ID, monitorId);
         }
 
         // Script text option
-        if(cli.hasOption("st"))
+        if(hasOption(cli, Opt.SCRIPT_TEXT, true))
         {
-            scriptText = cli.getOptionValue("st");
-            logOptionValue("script_text", scriptText);
-        }
-        else
-        {
-            logOptionMissing("script_text");
+            scriptText = getOptionValue(cli, Opt.SCRIPT_TEXT);
+            logOptionValue(Opt.SCRIPT_TEXT, scriptText);
         }
 
         // Locations option
-        if(cli.hasOption("l"))
+        if(hasOption(cli, Opt.LOCATIONS, false))
         {
             // Parse the locations and HMACs
-            String[] list = cli.getOptionValue("l").split(",");
+            String[] list = getOptionValue(cli, Opt.LOCATIONS).split(",");
             for(int i = 0; i < list.length; i+=2)
                 scriptLocations.add(ScriptLocation.builder().name(list[i].trim()).hmac(list[i+1].trim()).build());
-            logOptionValue("locations", scriptLocations.toString());
+            logOptionValue(Opt.LOCATIONS, scriptLocations.toString());
         }
     }
 
     /**
      * Update the monitor script.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicSyntheticsApi syntheticsApi = getSyntheticsApi();
 
@@ -131,7 +123,7 @@ public class UpdateMonitorScript extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Updating monitor script: "+monitorId);
 
         Script script = Script.builder()

@@ -59,8 +59,8 @@ public class ListUsers extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the users");
-        options.addOption("r", "role", true, "The role of the users, either \"owner\", \"admin\", \"user\" or \"restricted\"");
+        addOption(Opt.NAME, "The name of the users");
+        addOption(Opt.ROLE);
     }
 
     /**
@@ -70,36 +70,36 @@ public class ListUsers extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, false))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Role option
-        if(cli.hasOption("r"))
+        if(hasOption(cli, Opt.ROLE, false))
         {
-            role = cli.getOptionValue("r");
+            role = getOptionValue(cli, Opt.ROLE);
 
             // Check the value is valid
             if(User.Role.contains(role))
-                logOptionValue("role", role);
+                logOptionValue(Opt.ROLE, role);
             else
-                logOptionInvalid("role");
+                logOptionInvalid(Opt.ROLE);
         }
     }
 
     /**
      * List the users.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting users: "+name+(role != null ? " ("+role+")":""));
         Collection<User> users = api.users().list(name, role);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+users.size()+" users");
         for(User user : users)
             logger.info(user.getId()+" - "+user.getFirstName()+" "+user.getLastName()+" ("+user.getRole()+")");

@@ -58,7 +58,7 @@ public class ListDashboards extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the dashboards");
+        addOption(Opt.NAME, "The name of the dashboards");
     }
 
     /**
@@ -68,24 +68,24 @@ public class ListDashboards extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, false))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
     }
 
     /**
      * List the dashboards.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting dashboardss: "+name);
         Collection<Dashboard> dashboards = api.dashboards().list(name);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+dashboards.size()+" dashboards");
         for(Dashboard dashboard : dashboards)
             logger.info(dashboard.getId()+" - "+dashboard.getTitle());

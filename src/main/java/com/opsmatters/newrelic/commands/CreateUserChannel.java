@@ -59,8 +59,8 @@ public class CreateUserChannel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert channel");
-        options.addOption("u", "user", true, "The user id for the User channel");
+        addOption(Opt.NAME, "The name of the alert channel");
+        addOption(Opt.USER, "The user id for the User channel");
     }
 
     /**
@@ -70,36 +70,28 @@ public class CreateUserChannel extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // User Id option
-        if(cli.hasOption("u"))
+        if(hasOption(cli, Opt.USER, true))
         {
-            user = cli.getOptionValue("u");
-            logOptionValue("user", user);
-        }
-        else
-        {
-            logOptionMissing("user");
+            user = getOptionValue(cli, Opt.USER);
+            logOptionValue(Opt.USER, user);
         }
     }
 
     /**
      * Create the User alert channel.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating User channel: "+name);
 
         UserChannel c = UserChannel.builder()

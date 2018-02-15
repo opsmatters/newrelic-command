@@ -75,18 +75,18 @@ public class CreatePluginsAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert condition");
-        options.addOption("pi", "policy_id", true, "The id of the policy for the alert condition");
-        options.addOption("m", "metric", true, "The metric of the condition, depends on the type");
-        options.addOption("md", "metric_description", true, "The description of the metric");
-        options.addOption("p", "priority", true, "The priority of the condition, either \"critical\" or \"warning\"");
-        options.addOption("d", "duration", true, "The duration of the condition, either 5, 10, 15, 30, 60, or 120 minutes");
-        options.addOption("tf", "time_function", true, "The time_function of the condition, either \"all\" or \"any\", defaults to \"all\"");
-        options.addOption("th", "threshold", true, "The threshold of the condition");
-        options.addOption("o", "operator", true, "The operator of the condition, either \"above\", \"below\", or \"equal\"");
-        options.addOption("vf", "value_function", true, "The value_function of the condition, either \"min\", \"max\", \"average\", \"sample_size\", \"total\" or \"percent\", defaults to \"single_value\"");
-        options.addOption("pd", "plugin_id", true, "The id of the plugin");
-        options.addOption("g", "guid", true, "The guid of the plugin");
+        addOption(Opt.NAME, "The name of the alert condition");
+        addOption(Opt.POLICY_ID);
+        addOption(Opt.METRIC);
+        addOption(Opt.METRIC_DESCRIPTION);
+        addOption(Opt.PRIORITY);
+        addOption(Opt.DURATION, "The duration of the condition, either 5, 10, 15, 30, 60, or 120 minutes");
+        addOption(Opt.TIME_FUNCTION);
+        addOption(Opt.THRESHOLD);
+        addOption(Opt.OPERATOR);
+        addOption(Opt.VALUE_FUNCTION, "The value_function of the condition, either \"min\", \"max\", \"average\", \"sample_size\", \"total\" or \"percent\", defaults to \"single_value\"");
+        addOption(Opt.PLUGIN_ID);
+        addOption(Opt.GUID);
     }
 
     /**
@@ -96,163 +96,123 @@ public class CreatePluginsAlertCondition extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Policy id option
-        if(cli.hasOption("pi"))
+        if(hasOption(cli, Opt.POLICY_ID, true))
         {
-            policyId = Long.parseLong(cli.getOptionValue("pi"));
-            logOptionValue("policy_id", policyId);
-        }
-        else
-        {
-            logOptionMissing("policy_id");
+            policyId = Long.parseLong(getOptionValue(cli, Opt.POLICY_ID));
+            logOptionValue(Opt.POLICY_ID, policyId);
         }
 
         // Metric option
-        if(cli.hasOption("m"))
+        if(hasOption(cli, Opt.METRIC, true))
         {
-            metric = cli.getOptionValue("m");
-            logOptionValue("metric", metric);
-        }
-        else
-        {
-            logOptionMissing("metric");
+            metric = getOptionValue(cli, Opt.METRIC);
+            logOptionValue(Opt.METRIC, metric);
         }
 
         // Metric description option
-        if(cli.hasOption("md"))
+        if(hasOption(cli, Opt.METRIC_DESCRIPTION, true))
         {
-            metricDescription = cli.getOptionValue("md");
-            logOptionValue("metric_description", metricDescription);
-        }
-        else
-        {
-            logOptionMissing("metric_description");
+            metricDescription = getOptionValue(cli, Opt.METRIC_DESCRIPTION);
+            logOptionValue(Opt.METRIC_DESCRIPTION, metricDescription);
         }
 
         // Priority option
-        if(cli.hasOption("p"))
+        if(hasOption(cli, Opt.PRIORITY, true))
         {
-            priority = cli.getOptionValue("p");
+            priority = getOptionValue(cli, Opt.PRIORITY);
 
             // Check the value is valid
             if(Priority.contains(priority))
-                logOptionValue("priority", priority);
+                logOptionValue(Opt.PRIORITY, priority);
             else
-                logOptionInvalid("priority");
-        }
-        else
-        {
-            logOptionMissing("priority");
+                logOptionInvalid(Opt.PRIORITY);
         }
 
         // Duration option
-        if(cli.hasOption("d"))
+        if(hasOption(cli, Opt.DURATION, true))
         {
-            duration = Integer.parseInt(cli.getOptionValue("d"));
+            duration = Integer.parseInt(getOptionValue(cli, Opt.DURATION));
 
             // Check the value is valid
             if(Term.Duration.contains(duration))
-                logOptionValue("duration", duration);
+                logOptionValue(Opt.DURATION, duration);
             else
-                logOptionInvalid("duration");
-        }
-        else
-        {
-            logOptionMissing("duration");
+                logOptionInvalid(Opt.DURATION);
         }
 
         // Time function option
-        if(cli.hasOption("tf"))
+        if(hasOption(cli, Opt.TIME_FUNCTION, false))
         {
-            timeFunction = cli.getOptionValue("tf");
+            timeFunction = getOptionValue(cli, Opt.TIME_FUNCTION);
 
             // Check the value is valid
             if(TimeFunction.contains(timeFunction))
-                logOptionValue("time_function", timeFunction);
+                logOptionValue(Opt.TIME_FUNCTION, timeFunction);
             else
-                logOptionInvalid("time_function");
+                logOptionInvalid(Opt.TIME_FUNCTION);
         }
 
         // Threshold option
-        if(cli.hasOption("th"))
+        if(hasOption(cli, Opt.THRESHOLD, true))
         {
-            threshold = cli.getOptionValue("th");
-            logOptionValue("threshold", threshold);
-        }
-        else
-        {
-            logOptionMissing("threshold");
+            threshold = getOptionValue(cli, Opt.THRESHOLD);
+            logOptionValue(Opt.THRESHOLD, threshold);
         }
 
         // Operator option
-        if(cli.hasOption("o"))
+        if(hasOption(cli, Opt.OPERATOR, true))
         {
-            operator = cli.getOptionValue("o");
+            operator = getOptionValue(cli, Opt.OPERATOR);
 
             // Check the value is valid
             if(Operator.contains(operator))
-                logOptionValue("operator", operator);
+                logOptionValue(Opt.OPERATOR, operator);
             else
-                logOptionInvalid("operator");
-        }
-        else
-        {
-            logOptionMissing("operator");
+                logOptionInvalid(Opt.OPERATOR);
         }
 
         // Value function option
-        if(cli.hasOption("vf"))
+        if(hasOption(cli, Opt.VALUE_FUNCTION, true))
         {
-            valueFunction = cli.getOptionValue("vf");
+            valueFunction = getOptionValue(cli, Opt.VALUE_FUNCTION);
 
             // Check the value is valid
             if(PluginsAlertCondition.ValueFunction.contains(valueFunction))
-                logOptionValue("value_function", valueFunction);
+                logOptionValue(Opt.VALUE_FUNCTION, valueFunction);
             else
-                logOptionInvalid("value_function");
+                logOptionInvalid(Opt.VALUE_FUNCTION);
         }
 
         // Plugin id option
-        if(cli.hasOption("pd"))
+        if(hasOption(cli, Opt.PLUGIN_ID, true))
         {
-            pluginId = cli.getOptionValue("pd");
-            logOptionValue("plugin_id", pluginId);
-        }
-        else
-        {
-            logOptionMissing("plugin_id");
+            pluginId = getOptionValue(cli, Opt.PLUGIN_ID);
+            logOptionValue(Opt.PLUGIN_ID, pluginId);
         }
 
         // GUID option
-        if(cli.hasOption("g"))
+        if(hasOption(cli, Opt.GUID, true))
         {
-            guid = cli.getOptionValue("g");
-            logOptionValue("guid", guid);
-        }
-        else
-        {
-            logOptionMissing("guid");
+            guid = getOptionValue(cli, Opt.GUID);
+            logOptionValue(Opt.GUID, guid);
         }
     }
 
     /**
      * Create the alert condition.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policy: "+policyId);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(policyId);
@@ -262,7 +222,7 @@ public class CreatePluginsAlertCondition extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating Plugins alert condition: "+name);
 
         PluginsAlertCondition c = PluginsAlertCondition.builder()

@@ -66,10 +66,10 @@ public class CreateInfraHostNotReportingAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert condition");
-        options.addOption("pi", "policy_id", true, "The id of the policy for the alert condition");
-        options.addOption("d", "duration", true, "The duration of the condition in minutes");
-        options.addOption("wc", "where_clause", true, "The where_clause of the condition, optional");
+        addOption(Opt.NAME, "The name of the alert condition");
+        addOption(Opt.POLICY_ID);
+        addOption(Opt.DURATION, "The duration of the condition in minutes");
+        addOption(Opt.WHERE_CLAUSE);
     }
 
     /**
@@ -79,55 +79,43 @@ public class CreateInfraHostNotReportingAlertCondition extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Policy id option
-        if(cli.hasOption("pi"))
+        if(hasOption(cli, Opt.POLICY_ID, true))
         {
-            policyId = Long.parseLong(cli.getOptionValue("pi"));
-            logOptionValue("policy_id", policyId);
-        }
-        else
-        {
-            logOptionMissing("policy_id");
+            policyId = Long.parseLong(getOptionValue(cli, Opt.POLICY_ID));
+            logOptionValue(Opt.POLICY_ID, policyId);
         }
 
         // Duration option
-        if(cli.hasOption("d"))
+        if(hasOption(cli, Opt.DURATION, true))
         {
-            duration = Integer.parseInt(cli.getOptionValue("d"));
-            logOptionValue("duration", duration);
-        }
-        else
-        {
-            logOptionMissing("duration");
+            duration = Integer.parseInt(getOptionValue(cli, Opt.DURATION));
+            logOptionValue(Opt.DURATION, duration);
         }
 
         // Where clause option
-        if(cli.hasOption("wc"))
+        if(hasOption(cli, Opt.WHERE_CLAUSE, false))
         {
-            whereClause = cli.getOptionValue("wc");
-            logOptionValue("where_clause", whereClause);
+            whereClause = getOptionValue(cli, Opt.WHERE_CLAUSE);
+            logOptionValue(Opt.WHERE_CLAUSE, whereClause);
         }
     }
 
     /**
      * Create the alert condition.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
         NewRelicInfraApi infraApi = getInfraApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policy: "+policyId);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(policyId);
@@ -137,7 +125,7 @@ public class CreateInfraHostNotReportingAlertCondition extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating infra host condition: "+name);
 
         InfraAlertCondition c = InfraHostNotReportingAlertCondition.builder()

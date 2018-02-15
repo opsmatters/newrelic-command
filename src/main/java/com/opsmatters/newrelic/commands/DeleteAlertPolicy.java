@@ -58,7 +58,7 @@ public class DeleteAlertPolicy extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("i", "id", true, "The id of the alert policy");
+        addOption(Opt.ID, "The id of the alert policy");
     }
 
     /**
@@ -68,25 +68,21 @@ public class DeleteAlertPolicy extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // ID option
-        if(cli.hasOption("i"))
+        if(hasOption(cli, Opt.ID, true))
         {
-            id = Long.parseLong(cli.getOptionValue("i"));
-            logOptionValue("id", id);
-        }
-        else
-        {
-            logOptionMissing("id");
+            id = Long.parseLong(getOptionValue(cli, Opt.ID));
+            logOptionValue(Opt.ID, id);
         }
     }
 
     /**
      * Delete the alert policy.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policy: "+id);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(id);
@@ -96,7 +92,7 @@ public class DeleteAlertPolicy extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Deleting alert policy: "+id);
 
         AlertPolicy p = policy.get();

@@ -58,7 +58,7 @@ public class ListPlugins extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the plugins");
+        addOption(Opt.NAME, "The name of the plugins");
     }
 
     /**
@@ -68,24 +68,24 @@ public class ListPlugins extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, false))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
     }
 
     /**
      * List the plugins.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting plugins: "+name);
         Collection<Plugin> plugins = api.plugins().list(name, false);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+plugins.size()+" plugins");
         for(Plugin plugin : plugins)
             logger.info(plugin.getId()+" - "+plugin.getName());

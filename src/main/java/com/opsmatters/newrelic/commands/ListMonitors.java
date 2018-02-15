@@ -60,8 +60,8 @@ public class ListMonitors extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the monitors");
-        options.addOption("t", "type", true, "The type of the monitors, either \"SIMPLE\", \"BROWSER\", \"SCRIPT_BROWSER\" or \"SCRIPT_API\"");
+        addOption(Opt.NAME, "The name of the monitors");
+        addOption(Opt.TYPE, "The type of the monitors, either \"SIMPLE\", \"BROWSER\", \"SCRIPT_BROWSER\" or \"SCRIPT_API\"");
     }
 
     /**
@@ -71,36 +71,36 @@ public class ListMonitors extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, false))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Type option
-        if(cli.hasOption("t"))
+        if(hasOption(cli, Opt.TYPE, false))
         {
-            type = cli.getOptionValue("t");
+            type = getOptionValue(cli, Opt.TYPE);
 
             // Check the value is valid
             if(Monitor.MonitorType.contains(type))
-                logOptionValue("type", type);
+                logOptionValue(Opt.TYPE, type);
             else
-                logOptionInvalid("type");
+                logOptionInvalid(Opt.TYPE);
         }
     }
 
     /**
      * List the monitors.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicSyntheticsApi syntheticsApi = getSyntheticsApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting monitors: "+name+(type != null ? " ("+type+")":""));
         Collection<Monitor> monitors = syntheticsApi.monitors().list(name, type);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+monitors.size()+" monitors");
         for(Monitor monitor : monitors)
             logger.info(monitor.getId()+" - "+monitor.getName()+" ("+monitor.getType()+")");

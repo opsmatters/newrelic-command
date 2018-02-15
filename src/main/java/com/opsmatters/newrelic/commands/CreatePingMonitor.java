@@ -69,15 +69,15 @@ public class CreatePingMonitor extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the monitor");
-        options.addOption("u", "uri", true, "The uri of the monitor");
-        options.addOption("f", "frequency", true, "The frequency of the monitor in minutes, either 1, 5, 10, 15, 30, 60, 360, 720, or 1440, defaults to 10 minutes");
-        options.addOption("s", "sla_threshold", true, "The SLA threshold of the monitor (Apdex T), defaults to 7.0");
-        options.addOption("vs", "validation_string", true, "The validation string for the monitor, optional");
-        options.addOption("vso", "verify_ssl", true, "Execute an SSL handshake, defaults to false");
-        options.addOption("bho", "bypass_head_request", true, "Send full HTTP requests for GET, defaults to true");
-        options.addOption("rfo", "treat_redirect_as_failure", true, "Fail on a HTTP redirect, defaults to false");
-        options.addOption("l", "locations", true, "Comma-separated list of locations");
+        addOption(Opt.NAME, "The name of the monitor");
+        addOption(Opt.URI);
+        addOption(Opt.FREQUENCY);
+        addOption(Opt.SLA_THRESHOLD);
+        addOption(Opt.VALIDATION_STRING);
+        addOption(Opt.VERIFY_SSL);
+        addOption(Opt.BYPASS_HEAD_REQUEST);
+        addOption(Opt.TREAT_REDIRECT_AS_FAILURE);
+        addOption(Opt.LOCATIONS);
     }
 
     /**
@@ -87,96 +87,84 @@ public class CreatePingMonitor extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Uri option
-        if(cli.hasOption("u"))
+        if(hasOption(cli, Opt.URI, true))
         {
-            uri = cli.getOptionValue("u");
-            logOptionValue("uri", uri);
-        }
-        else
-        {
-            logOptionMissing("uri");
+            uri = getOptionValue(cli, Opt.URI);
+            logOptionValue(Opt.URI, uri);
         }
 
         // SLA threshold option (Apdex T)
-        if(cli.hasOption("s"))
+        if(hasOption(cli, Opt.SLA_THRESHOLD, false))
         {
-            slaThreshold = Double.parseDouble(cli.getOptionValue("s"));
-            logOptionValue("sla_threshold", slaThreshold);
+            slaThreshold = Double.parseDouble(getOptionValue(cli, Opt.SLA_THRESHOLD));
+            logOptionValue(Opt.SLA_THRESHOLD, slaThreshold);
         }
 
         // Frequency option
-        if(cli.hasOption("f"))
+        if(hasOption(cli, Opt.FREQUENCY, false))
         {
-            frequency = Integer.parseInt(cli.getOptionValue("f"));
+            frequency = Integer.parseInt(getOptionValue(cli, Opt.FREQUENCY));
 
             // Check the value is valid
             if(Monitor.Frequency.contains(frequency))
-                logOptionValue("frequency", frequency);
+                logOptionValue(Opt.FREQUENCY, frequency);
             else
-                logOptionInvalid("frequency");
+                logOptionInvalid(Opt.FREQUENCY);
         }
 
         // Validation string option
-        if(cli.hasOption("vs"))
+        if(hasOption(cli, Opt.VALIDATION_STRING, false))
         {
-            validationString = cli.getOptionValue("vs");
-            logOptionValue("validation_string", validationString);
+            validationString = getOptionValue(cli, Opt.VALIDATION_STRING);
+            logOptionValue(Opt.VALIDATION_STRING, validationString);
         }
 
         // Verify SSL option
-        if(cli.hasOption("vso"))
+        if(hasOption(cli, Opt.VERIFY_SSL, false))
         {
-            verifySsl = Boolean.parseBoolean(cli.getOptionValue("vso"));
-            logOptionValue("verify_ssl", verifySsl);
+            verifySsl = Boolean.parseBoolean(getOptionValue(cli, Opt.VERIFY_SSL));
+            logOptionValue(Opt.VERIFY_SSL, verifySsl);
         }
 
         // Bypass HEAD request option
-        if(cli.hasOption("bho"))
+        if(hasOption(cli, Opt.BYPASS_HEAD_REQUEST, false))
         {
-            bypassHeadRequest = Boolean.parseBoolean(cli.getOptionValue("bho"));
-            logOptionValue("bypass_head_request", bypassHeadRequest);
+            bypassHeadRequest = Boolean.parseBoolean(getOptionValue(cli, Opt.BYPASS_HEAD_REQUEST));
+            logOptionValue(Opt.BYPASS_HEAD_REQUEST, bypassHeadRequest);
         }
 
         // Redirect as failure option
-        if(cli.hasOption("rfo"))
+        if(hasOption(cli, Opt.TREAT_REDIRECT_AS_FAILURE, false))
         {
-            treatRedirectAsFailure = Boolean.parseBoolean(cli.getOptionValue("rfo"));
-            logOptionValue("treat_redirect_as_failure", treatRedirectAsFailure);
+            treatRedirectAsFailure = Boolean.parseBoolean(getOptionValue(cli, Opt.TREAT_REDIRECT_AS_FAILURE));
+            logOptionValue(Opt.TREAT_REDIRECT_AS_FAILURE, treatRedirectAsFailure);
         }
 
         // Locations option
-        if(cli.hasOption("l"))
+        if(hasOption(cli, Opt.LOCATIONS, true))
         {
-            String[] list = cli.getOptionValue("l").split(",");
+            String[] list = getOptionValue(cli, Opt.LOCATIONS).split(",");
             for(String location : list)
                 locations.add(location.trim());
-            logOptionValue("locations", locations.toString());
-        }
-        else
-        {
-            logOptionMissing("locations");
+            logOptionValue(Opt.LOCATIONS, locations.toString());
         }
     }
 
     /**
      * Create the monitor.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicSyntheticsApi syntheticsApi = getSyntheticsApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating monitor: "+name);
 
         Monitor sm = SimpleMonitor.builder()

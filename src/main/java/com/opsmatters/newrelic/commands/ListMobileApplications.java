@@ -58,7 +58,7 @@ public class ListMobileApplications extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the mobile applications");
+        addOption(Opt.NAME, "The name of the mobile applications");
     }
 
     /**
@@ -68,24 +68,24 @@ public class ListMobileApplications extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, false))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
     }
 
     /**
      * List the mobile applications.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting mobile applications: "+name);
         Collection<MobileApplication> applications = api.mobileApplications().list(name);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+applications.size()+" mobile applications");
         for(MobileApplication application : applications)
             logger.info(application.getId()+" - "+application.getName());

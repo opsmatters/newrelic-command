@@ -58,7 +58,7 @@ public class DeleteDashboard extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("i", "id", true, "The id of the dashboard");
+        addOption(Opt.ID, "The id of the dashboard");
     }
 
     /**
@@ -67,22 +67,18 @@ public class DeleteDashboard extends BaseCommand
      */
     protected void parse(CommandLine cli)
     {
-        // Dashboard ID option
-        if(cli.hasOption("i"))
+        // ID option
+        if(hasOption(cli, Opt.ID, true))
         {
-            id = Long.parseLong(cli.getOptionValue("i"));
-            logOptionValue("id", id);
-        }
-        else
-        {
-            logOptionMissing("id");
+            id = Long.parseLong(getOptionValue(cli, Opt.ID));
+            logOptionValue(Opt.ID, id);
         }
     }
 
     /**
      * Delete the dashboard.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
@@ -93,7 +89,7 @@ public class DeleteDashboard extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Deleting dashboard: "+id);
 
         Dashboard d = dashboard.get();

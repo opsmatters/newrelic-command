@@ -69,14 +69,14 @@ public class ListLocations extends BaseCommand
     /**
      * List the locations.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicSyntheticsApi syntheticsApi = getSyntheticsApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting locations: ");
         Collection<Location> locations = syntheticsApi.locations().list();
-        if(verbose)
+        if(verbose())
             logger.info("Found "+locations.size()+" locations");
         for(Location location : locations)
             logger.info(location.getName()+" ("+location.getLabel()+")");

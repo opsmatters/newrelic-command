@@ -36,10 +36,10 @@ public abstract class BaseCommand
 {
     private static final Logger logger = Logger.getLogger(BaseCommand.class.getName());
 
-    protected String[] args;
-    protected Options options = new Options();
-    protected String apiKey;
-    protected boolean verbose = false;
+    private String[] args;
+    private Options options = new Options();
+    private String apiKey;
+    private boolean verbose = false;
 
     /**
      * Default constructor.
@@ -53,6 +53,15 @@ public abstract class BaseCommand
      * @return The name of the command
      */
     public abstract String getName();
+
+    /**
+     * Returns <CODE>true</CODE> if verbose logging is enabled.
+     * @return <CODE>true</CODE> if verbose logging is enabled
+     */
+    protected boolean verbose()
+    {
+        return verbose;
+    }
 
     /**
      * Sets the list of arguments for the command.
@@ -70,9 +79,9 @@ public abstract class BaseCommand
      */
     protected void options()
     {
-        options.addOption("h", "help", false, "Prints a usage statement");
-        options.addOption("v", "verbose", false, "Enables verbose logging messages");
-        options.addOption("x", "x_api_key", true, "The New Relic API key for the account or user");
+        addOption(Opt.HELP);
+        addOption(Opt.VERBOSE);
+        addOption(Opt.X_API_KEY);
     }
 
     /**
@@ -88,27 +97,22 @@ public abstract class BaseCommand
             CommandLine cli = parser.parse(options, args);
 
             // Help option
-            if(cli.hasOption("h"))
+            if(hasOption(cli, Opt.HELP, false))
             {
                 help();
             }
 
             // Verbose option
-            if(cli.hasOption("v"))
+            if(hasOption(cli, Opt.VERBOSE, false))
             {
                 verbose = true;
             }
 
             // API key option
-            if(cli.hasOption("x"))
+            if(hasOption(cli, Opt.X_API_KEY, true))
             {
-                apiKey = cli.getOptionValue("x");
-                logOptionValue("x_api_key", apiKey);
-            }
-            else
-            {
-                logger.severe("\"x_api_key\" option is missing");
-                help();
+                apiKey = getOptionValue(cli, Opt.X_API_KEY);
+                logOptionValue(Opt.X_API_KEY, apiKey);
             }
 
             // Parse command-specific options
@@ -121,7 +125,7 @@ public abstract class BaseCommand
         }
 
         // Execute the command operation
-        operation();
+        execute();
     }
 
     /**
@@ -133,7 +137,7 @@ public abstract class BaseCommand
     /**
      * Execute the command operation using the command line parameters.
      */
-    protected abstract void operation();
+    protected abstract void execute();
 
     /**
      * Print out the help statement.
@@ -146,64 +150,111 @@ public abstract class BaseCommand
     }
 
     /**
-     * Log a missing option.
-     * @param option The option that is missing
+     * Returns <CODE>true</CODE> if the given option exists.
+     * @param cli The parsed command line
+     * @param opt The option to be checked
+     * @param mandatory <CODE>true</CODE> if the option is mandatory. A missing mandatory field will result in an error.
+     * @return <CODE>true</CODE> if the given option exists
      */
-    protected void logOptionMissing(String option)
+    protected boolean hasOption(CommandLine cli, Opt opt, boolean mandatory)
     {
-        logger.severe("\""+option+"\" option is missing");
+        boolean exists = cli.hasOption(opt.shortName());
+        if(mandatory && !exists)
+            logOptionMissing(opt);
+        return exists;
+    }
+
+    /**
+     * Add an option.
+     * @param opt The option to add
+     * @param description The description of the option. Overrides the default description from the option.
+     */
+    protected void addOption(Opt opt, String description)
+    {
+        options.addOption(opt.shortName(), opt.longName(), opt.hasArg(), description);
+    }
+
+    /**
+     * Add an option.
+     * @param opt The option to add
+     */
+    protected void addOption(Opt opt)
+    {
+        if(opt.description() == null)
+            throw new IllegalArgumentException("option \""+opt.longName()+"\" has missing description");
+        addOption(opt, opt.description());
+    }
+
+    /**
+     * Returns the value of an option.
+     * @param cli The parsed command line
+     * @param opt The option to be returned
+     * @return The value of the option
+     */
+    protected String getOptionValue(CommandLine cli, Opt opt)
+    {
+        return cli.getOptionValue(opt.shortName());
+    }
+
+    /**
+     * Log the value of an option.
+     * @param opt The option to be logged
+     * @param value The value of the option
+     */
+    protected void logOptionValue(Opt opt, String value)
+    {
+        if(verbose)
+            logger.info("Using "+opt.longName()+": "+value);
+    }
+
+    /**
+     * Log the value of an option.
+     * @param opt The option to be logged
+     * @param value The value of the option
+     */
+    protected void logOptionValue(Opt opt, boolean value)
+    {
+        logOptionValue(opt, Boolean.toString(value));
+    }
+
+    /**
+     * Log the value of an option.
+     * @param opt The option to be logged
+     * @param value The value of the option
+     */
+    protected void logOptionValue(Opt opt, long value)
+    {
+        logOptionValue(opt, Long.toString(value));
+    }
+
+    /**
+     * Log the value of an option.
+     * @param opt The option to be logged
+     * @param value The value of the option
+     */
+    protected void logOptionValue(Opt opt, double value)
+    {
+        logOptionValue(opt, Double.toString(value));
+    }
+
+    /**
+     * Log a missing option.
+     * @param opt The option that is missing
+     */
+    protected void logOptionMissing(Opt opt)
+    {
+        logger.severe("\""+opt.longName()+"\" option is missing");
         help();
     }
 
     /**
      * Log an invalid option.
-     * @param option The option that is invalid
+     * @param opt The option that is invalid
      */
-    protected void logOptionInvalid(String option)
+    protected void logOptionInvalid(Opt opt)
     {
-        logger.severe("\""+option+"\" option is invalid");
+        logger.severe("\""+opt.longName()+"\" option is invalid");
         help();
-    }
-
-    /**
-     * Log the value of an option.
-     * @param option The option to be logged
-     * @param value The value of the option
-     */
-    protected void logOptionValue(String option, String value)
-    {
-        if(verbose)
-            logger.info("Using "+option+": "+value);
-    }
-
-    /**
-     * Log the value of an option.
-     * @param option The option to be logged
-     * @param value The value of the option
-     */
-    protected void logOptionValue(String option, boolean value)
-    {
-        logOptionValue(option, Boolean.toString(value));
-    }
-
-    /**
-     * Log the value of an option.
-     * @param option The option to be logged
-     * @param value The value of the option
-     */
-    protected void logOptionValue(String option, long value)
-    {
-        logOptionValue(option, Long.toString(value));
-    }
-
-    /**
-     * Log the value of an option.
-     * @param option The option to be logged
-     * @param value The value of the option
-     */
-    protected void logOptionValue(String option, double value)
-    {
-        logOptionValue(option, Double.toString(value));
     }
 
     /**

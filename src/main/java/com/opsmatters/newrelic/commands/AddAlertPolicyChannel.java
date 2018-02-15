@@ -60,8 +60,8 @@ public class AddAlertPolicyChannel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("pi", "policy_id", true, "The id of the alert policy");
-        options.addOption("ci", "channel_id", true, "The id of the alert channel");
+        addOption(Opt.POLICY_ID);
+        addOption(Opt.CHANNEL_ID);
     }
 
     /**
@@ -71,36 +71,28 @@ public class AddAlertPolicyChannel extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Policy id option
-        if(cli.hasOption("pi"))
+        if(hasOption(cli, Opt.POLICY_ID, true))
         {
-            policyId = Long.parseLong(cli.getOptionValue("pi"));
-            logOptionValue("policy_id", policyId);
-        }
-        else
-        {
-            logOptionMissing("policy_id");
+            policyId = Long.parseLong(getOptionValue(cli, Opt.POLICY_ID));
+            logOptionValue(Opt.POLICY_ID, policyId);
         }
 
         // Channel id option
-        if(cli.hasOption("ci"))
+        if(hasOption(cli, Opt.CHANNEL_ID, true))
         {
-            channelId = Long.parseLong(cli.getOptionValue("ci"));
-            logOptionValue("channel_id", channelId);
-        }
-        else
-        {
-            logOptionMissing("channel_id");
+            channelId = Long.parseLong(getOptionValue(cli, Opt.CHANNEL_ID));
+            logOptionValue(Opt.CHANNEL_ID, channelId);
         }
     }
 
     /**
      * Add the channel to the alert policy.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policy: "+policyId);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(policyId);
@@ -110,7 +102,7 @@ public class AddAlertPolicyChannel extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert channel: "+channelId);
 
         Optional<AlertChannel> channel = api.alertChannels().show(channelId);
@@ -122,7 +114,7 @@ public class AddAlertPolicyChannel extends BaseCommand
 
         AlertPolicy p = policy.get();
         AlertChannel c = channel.get();
-        if(verbose)
+        if(verbose())
             logger.info("Adding alert channel "+c.getId()+" to policy "+p.getId());
         api.alertPolicyChannels().update(p.getId(), c.getId());
         logger.info("Added alert channel: "+c.getId()+" - "+c.getName()+" to policy: "+p.getId()+" - "+p.getName());

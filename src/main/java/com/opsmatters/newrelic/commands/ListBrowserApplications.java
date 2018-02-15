@@ -58,7 +58,7 @@ public class ListBrowserApplications extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the browser applications");
+        addOption(Opt.NAME, "The name of the browser applications");
     }
 
     /**
@@ -68,24 +68,24 @@ public class ListBrowserApplications extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, false))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
     }
 
     /**
      * List the browser applications.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting browser applications: "+name);
         Collection<BrowserApplication> applications = api.browserApplications().list(name);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+applications.size()+" browser applications");
         for(BrowserApplication application : applications)
             logger.info(application.getId()+" - "+application.getName());

@@ -61,10 +61,10 @@ public class CreateCampfireChannel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert channel");
-        options.addOption("s", "subdomain", true, "The subdomain for the Campfire channel");
-        options.addOption("t", "token", true, "The token for the Campfire channel");
-        options.addOption("r", "room", true, "The room for the Campfire channel");
+        addOption(Opt.NAME, "The name of the alert channel");
+        addOption(Opt.SUBDOMAIN);
+        addOption(Opt.TOKEN);
+        addOption(Opt.ROOM, "The room for the Campfire channel");
     }
 
     /**
@@ -74,58 +74,42 @@ public class CreateCampfireChannel extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Subdomain option
-        if(cli.hasOption("s"))
+        if(hasOption(cli, Opt.SUBDOMAIN, true))
         {
-            subdomain = cli.getOptionValue("s");
-            logOptionValue("subdomain", subdomain);
-        }
-        else
-        {
-            logOptionMissing("subdomain");
+            subdomain = getOptionValue(cli, Opt.SUBDOMAIN);
+            logOptionValue(Opt.SUBDOMAIN, subdomain);
         }
 
         // Token option
-        if(cli.hasOption("t"))
+        if(hasOption(cli, Opt.TOKEN, true))
         {
-            token = cli.getOptionValue("t");
-            logOptionValue("token", token);
-        }
-        else
-        {
-            logOptionMissing("token");
+            token = getOptionValue(cli, Opt.TOKEN);
+            logOptionValue(Opt.TOKEN, token);
         }
 
         // Room option
-        if(cli.hasOption("r"))
+        if(hasOption(cli, Opt.ROOM, true))
         {
-            room = cli.getOptionValue("r");
-            logOptionValue("room", room);
-        }
-        else
-        {
-            logOptionMissing("room");
+            room = getOptionValue(cli, Opt.ROOM);
+            logOptionValue(Opt.ROOM, room);
         }
     }
 
     /**
      * Create the Campfire alert channel.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating Campfire channel: "+name);
 
         CampfireChannel c = CampfireChannel.builder()

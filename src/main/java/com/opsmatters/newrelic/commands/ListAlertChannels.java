@@ -60,8 +60,8 @@ public class ListAlertChannels extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert channels");
-        options.addOption("t", "type", true, "The type of the alert channels");
+        addOption(Opt.NAME, "The name of the alert channels");
+        addOption(Opt.TYPE, "The type of the alert channels");
     }
 
     /**
@@ -71,36 +71,36 @@ public class ListAlertChannels extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, false))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Type option
-        if(cli.hasOption("t"))
+        if(hasOption(cli, Opt.TYPE, false))
         {
-            type = cli.getOptionValue("t");
+            type = getOptionValue(cli, Opt.TYPE);
 
             // Check the value is valid
             if(ChannelType.contains(type))
-                logOptionValue("type", type);
+                logOptionValue(Opt.TYPE, type);
             else
-                logOptionInvalid("type");
+                logOptionInvalid(Opt.TYPE);
         }
     }
 
     /**
      * List the alert channels.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert channels: "+name+(type != null ? " ("+type+")":""));
         Collection<AlertChannel> channels = api.alertChannels().list(name, type);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+channels.size()+" alert channels");
         for(AlertChannel channel : channels)
             logger.info(channel.getId()+" - "+channel.getName()+" ("+channel.getType()+")");

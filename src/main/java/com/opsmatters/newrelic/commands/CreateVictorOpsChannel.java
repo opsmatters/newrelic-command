@@ -60,9 +60,9 @@ public class CreateVictorOpsChannel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert channel");
-        options.addOption("k", "key", true, "The key for the VictorOps channel");
-        options.addOption("rk", "route_key", true, "The route key of the VictorOps channel");
+        addOption(Opt.NAME, "The name of the alert channel");
+        addOption(Opt.KEY, "The key for the VictorOps channel");
+        addOption(Opt.ROUTE_KEY);
     }
 
     /**
@@ -72,47 +72,35 @@ public class CreateVictorOpsChannel extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Key option
-        if(cli.hasOption("k"))
+        if(hasOption(cli, Opt.KEY, true))
         {
-            key = cli.getOptionValue("k");
-            logOptionValue("key", key);
-        }
-        else
-        {
-            logOptionMissing("key");
+            key = getOptionValue(cli, Opt.KEY);
+            logOptionValue(Opt.KEY, key);
         }
 
         // Route key option
-        if(cli.hasOption("rk"))
+        if(hasOption(cli, Opt.ROUTE_KEY, true))
         {
-            routeKey = cli.getOptionValue("rk");
-            logOptionValue("route_key", routeKey);
-        }
-        else
-        {
-            logOptionMissing("route_key");
+            routeKey = getOptionValue(cli, Opt.ROUTE_KEY);
+            logOptionValue(Opt.ROUTE_KEY, routeKey);
         }
     }
 
     /**
      * Create the VictorOps alert channel.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating VictorOps channel: "+name);
 
         VictorOpsChannel c = VictorOpsChannel.builder()

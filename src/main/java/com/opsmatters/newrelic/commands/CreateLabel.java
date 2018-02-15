@@ -63,10 +63,10 @@ public class CreateLabel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("ai", "application_id", true, "The id of the application");
-        options.addOption("si", "server_id", true, "The id of the server");
-        options.addOption("c", "category", true, "The category of the label");
-        options.addOption("n", "name", true, "The name of the label");
+        addOption(Opt.APPLICATION_ID);
+        addOption(Opt.SERVER_ID);
+        addOption(Opt.CATEGORY);
+        addOption(Opt.NAME, "The name of the label");
     }
 
     /**
@@ -76,52 +76,44 @@ public class CreateLabel extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Application ID option
-        if(cli.hasOption("ai"))
+        if(hasOption(cli, Opt.APPLICATION_ID, false))
         {
-            applicationId = Long.parseLong(cli.getOptionValue("ai"));
-            logOptionValue("application_id", applicationId);
+            applicationId = Long.parseLong(getOptionValue(cli, Opt.APPLICATION_ID));
+            logOptionValue(Opt.APPLICATION_ID, applicationId);
         }
 
         // Server ID option
-        if(cli.hasOption("si"))
+        if(hasOption(cli, Opt.SERVER_ID, false))
         {
-            serverId = Long.parseLong(cli.getOptionValue("si"));
-            logOptionValue("server_id", serverId);
+            serverId = Long.parseLong(getOptionValue(cli, Opt.SERVER_ID));
+            logOptionValue(Opt.SERVER_ID, serverId);
         }
 
         // Category option
-        if(cli.hasOption("c"))
+        if(hasOption(cli, Opt.CATEGORY, true))
         {
-            category = cli.getOptionValue("c");
-            logOptionValue("category", category);
-        }
-        else
-        {
-            logOptionMissing("category");
+            category = getOptionValue(cli, Opt.CATEGORY);
+            logOptionValue(Opt.CATEGORY, category);
         }
 
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
     }
 
     /**
      * Create the label.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
         if(applicationId != null)
         {
-            if(verbose)
+            if(verbose())
                 logger.info("Getting application: "+applicationId);
 
             Optional<Application> application = Optional.absent();
@@ -143,7 +135,7 @@ public class CreateLabel extends BaseCommand
 
         if(serverId != null)
         {
-            if(verbose)
+            if(verbose())
                 logger.info("Getting server: "+serverId);
 
             Optional<Server> server = Optional.absent();
@@ -163,7 +155,7 @@ public class CreateLabel extends BaseCommand
             }
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating label: "+Label.getKey(category, name));
 
         Label l = Label.builder()

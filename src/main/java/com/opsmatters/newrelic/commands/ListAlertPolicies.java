@@ -58,7 +58,7 @@ public class ListAlertPolicies extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert policies");
+        addOption(Opt.NAME, "The name of the alert policies");
     }
 
     /**
@@ -68,24 +68,24 @@ public class ListAlertPolicies extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, false))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
     }
 
     /**
      * List the alert policies.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policies: "+name);
         Collection<AlertPolicy> policies = api.alertPolicies().list(name);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+policies.size()+" alert policies");
         for(AlertPolicy policy : policies)
             logger.info(policy.getId()+" - "+policy.getName()+" ("+policy.getIncidentPreference()+")");

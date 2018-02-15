@@ -60,7 +60,7 @@ public class ListApplicationAlertConditions extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("ai", "application_id", true, "The id of the application");
+        addOption(Opt.APPLICATION_ID);
     }
 
     /**
@@ -69,26 +69,22 @@ public class ListApplicationAlertConditions extends BaseCommand
      */
     protected void parse(CommandLine cli)
     {
-        // Application id option
-        if(cli.hasOption("ai"))
+        // Application ID option
+        if(hasOption(cli, Opt.APPLICATION_ID, true))
         {
-            applicationId = Long.parseLong(cli.getOptionValue("ai"));
-            logOptionValue("application_id", applicationId);
-        }
-        else
-        {
-            logOptionMissing("application_id");
+            applicationId = Long.parseLong(getOptionValue(cli, Opt.APPLICATION_ID));
+            logOptionValue(Opt.APPLICATION_ID, applicationId);
         }
     }
 
     /**
      * List the alert conditions for the application.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting application: "+applicationId);
 
         Optional<Application> application = Optional.absent();
@@ -109,10 +105,10 @@ public class ListApplicationAlertConditions extends BaseCommand
 
         Application a = application.get();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert conditions for application: "+a.getId());
         Collection<AlertCondition> conditions = api.alertEntityConditions().list(a);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+conditions.size()+" alert conditions");
         for(AlertCondition condition : conditions)
             logger.info(condition.getId()+" - "+condition.getName()+" ("+condition.getType()+")");

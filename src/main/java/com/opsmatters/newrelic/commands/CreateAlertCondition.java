@@ -79,17 +79,17 @@ public class CreateAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert condition");
-        options.addOption("t", "type", true, "The type of the alert condition");
-        options.addOption("pi", "policy_id", true, "The id of the policy for the alert condition");
-        options.addOption("m", "metric", true, "The metric of the condition, depends on the type");
-        options.addOption("s", "scope", true, "The scope of the condition, either \"instance\" or \"application\"");
-        options.addOption("p", "priority", true, "The priority of the condition, either \"critical\" or \"warning\"");
-        options.addOption("vct", "violation_close_timer", true, "The violation close timer of the condition, either 1, 2, 4, 8, 12, or 24 hours, defaults to 24 hours");
-        options.addOption("d", "duration", true, "The duration of the condition, either 5, 10, 15, 30, 60, or 120 minutes");
-        options.addOption("tf", "time_function", true, "The time_function of the condition, either \"all\" or \"any\", defaults to \"all\"");
-        options.addOption("th", "threshold", true, "The threshold of the condition");
-        options.addOption("o", "operator", true, "The operator of the condition, either \"above\", \"below\", or \"equal\"");
+        addOption(Opt.POLICY_ID);
+        addOption(Opt.NAME, "The name of the alert condition");
+        addOption(Opt.TYPE, "The type of the alert condition");
+        addOption(Opt.METRIC);
+        addOption(Opt.SCOPE);
+        addOption(Opt.PRIORITY);
+        addOption(Opt.VIOLATION_CLOSE_TIMER);
+        addOption(Opt.DURATION, "The duration of the condition, either 5, 10, 15, 30, 60, or 120 minutes");
+        addOption(Opt.TIME_FUNCTION);
+        addOption(Opt.THRESHOLD);
+        addOption(Opt.OPERATOR);
     }
 
     /**
@@ -99,162 +99,126 @@ public class CreateAlertCondition extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Type option
-        if(cli.hasOption("t"))
+        if(hasOption(cli, Opt.TYPE, true))
         {
-            type = cli.getOptionValue("t");
+            type = getOptionValue(cli, Opt.TYPE);
 
             // Check the value is valid
             if(AlertCondition.ConditionType.contains(type))
-                logOptionValue("type", type);
+                logOptionValue(Opt.TYPE, type);
             else
-                logOptionInvalid("type");
-        }
-        else
-        {
-            logOptionMissing("type");
+                logOptionInvalid(Opt.TYPE);
         }
 
         // Policy id option
-        if(cli.hasOption("pi"))
+        if(hasOption(cli, Opt.POLICY_ID, true))
         {
-            policyId = Long.parseLong(cli.getOptionValue("pi"));
-            logOptionValue("policy_id", policyId);
-        }
-        else
-        {
-            logOptionMissing("policy_id");
+            policyId = Long.parseLong(getOptionValue(cli, Opt.POLICY_ID));
+            logOptionValue(Opt.POLICY_ID, policyId);
         }
 
         // Metric option
-        if(cli.hasOption("m"))
+        if(hasOption(cli, Opt.METRIC, true))
         {
-            metric = cli.getOptionValue("m");
-            logOptionValue("metric", metric);
-        }
-        else
-        {
-            logOptionMissing("metric");
+            metric = getOptionValue(cli, Opt.METRIC);
+            logOptionValue(Opt.METRIC, metric);
         }
 
         // Scope option
-        if(cli.hasOption("s"))
+        if(hasOption(cli, Opt.SCOPE, true))
         {
-            conditionScope = cli.getOptionValue("s");
+            conditionScope = getOptionValue(cli, Opt.SCOPE);
 
             // Check the value is valid
             if(AlertCondition.ConditionScope.contains(conditionScope))
-                logOptionValue("scope", conditionScope);
+                logOptionValue(Opt.SCOPE, conditionScope);
             else
-                logOptionInvalid("scope");
-        }
-        else
-        {
-            logOptionMissing("scope");
+                logOptionInvalid(Opt.SCOPE);
         }
 
         // Priority option
-        if(cli.hasOption("p"))
+        if(hasOption(cli, Opt.PRIORITY, true))
         {
-            priority = cli.getOptionValue("p");
+            priority = getOptionValue(cli, Opt.PRIORITY);
 
             // Check the value is valid
             if(Priority.contains(priority))
-                logOptionValue("priority", priority);
+                logOptionValue(Opt.PRIORITY, priority);
             else
-                logOptionInvalid("priority");
-        }
-        else
-        {
-            logOptionMissing("priority");
+                logOptionInvalid(Opt.PRIORITY);
         }
 
         // Violation close timer option
-        if(cli.hasOption("vct"))
+        if(hasOption(cli, Opt.VIOLATION_CLOSE_TIMER, false))
         {
-            violationCloseTimer = Integer.parseInt(cli.getOptionValue("vct"));
+            violationCloseTimer = Integer.parseInt(getOptionValue(cli, Opt.VIOLATION_CLOSE_TIMER));
 
             // Check the value is valid
             if(AlertCondition.ViolationCloseTimerInterval.contains(violationCloseTimer))
-                logOptionValue("violation_close_timer", violationCloseTimer);
+                logOptionValue(Opt.VIOLATION_CLOSE_TIMER, violationCloseTimer);
             else
-                logOptionInvalid("violation_close_timer");
+                logOptionInvalid(Opt.VIOLATION_CLOSE_TIMER);
         }
 
         // Duration option
-        if(cli.hasOption("d"))
+        if(hasOption(cli, Opt.DURATION, true))
         {
-            duration = Integer.parseInt(cli.getOptionValue("d"));
+            duration = Integer.parseInt(getOptionValue(cli, Opt.DURATION));
 
             // Check the value is valid
             if(Term.Duration.contains(duration))
-                logOptionValue("duration", duration);
+                logOptionValue(Opt.DURATION, duration);
             else
-                logOptionInvalid("duration");
-        }
-        else
-        {
-            logOptionMissing("duration");
+                logOptionInvalid(Opt.DURATION);
         }
 
         // Time function option
-        if(cli.hasOption("tf"))
+        if(hasOption(cli, Opt.TIME_FUNCTION, false))
         {
-            timeFunction = cli.getOptionValue("tf");
+            timeFunction = getOptionValue(cli, Opt.TIME_FUNCTION);
 
             // Check the value is valid
             if(TimeFunction.contains(timeFunction))
-                logOptionValue("time_function", timeFunction);
+                logOptionValue(Opt.TIME_FUNCTION, timeFunction);
             else
-                logOptionInvalid("time_function");
+                logOptionInvalid(Opt.TIME_FUNCTION);
         }
 
         // Threshold option
-        if(cli.hasOption("th"))
+        if(hasOption(cli, Opt.THRESHOLD, true))
         {
-            threshold = cli.getOptionValue("th");
-            logOptionValue("threshold", threshold);
-        }
-        else
-        {
-            logOptionMissing("threshold");
+            threshold = getOptionValue(cli, Opt.THRESHOLD);
+            logOptionValue(Opt.THRESHOLD, threshold);
         }
 
         // Operator option
-        if(cli.hasOption("o"))
+        if(hasOption(cli, Opt.OPERATOR, true))
         {
-            operator = cli.getOptionValue("o");
+            operator = getOptionValue(cli, Opt.OPERATOR);
 
             // Check the value is valid
             if(Operator.contains(operator))
-                logOptionValue("operator", operator);
+                logOptionValue(Opt.OPERATOR, operator);
             else
-                logOptionInvalid("operator");
-        }
-        else
-        {
-            logOptionMissing("operator");
+                logOptionInvalid(Opt.OPERATOR);
         }
     }
 
     /**
      * Create the alert condition.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policy: "+policyId);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(policyId);
@@ -264,7 +228,7 @@ public class CreateAlertCondition extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating alert condition: "+name);
 
         AlertCondition c = null;
@@ -315,7 +279,7 @@ public class CreateAlertCondition extends BaseCommand
     {
         // Check the metric is valid
         if(!ApmAppAlertCondition.Metric.contains(metric))
-            logOptionInvalid("metric");
+            logOptionInvalid(Opt.METRIC);
 
         return ApmAppAlertCondition.builder()
             .name(name)
@@ -334,7 +298,7 @@ public class CreateAlertCondition extends BaseCommand
     {
         // Check the metric is valid
         if(!ApmKeyTransactionAlertCondition.Metric.contains(metric))
-            logOptionInvalid("metric");
+            logOptionInvalid(Opt.METRIC);
 
         return ApmKeyTransactionAlertCondition.builder()
             .name(name)
@@ -353,7 +317,7 @@ public class CreateAlertCondition extends BaseCommand
     {
         // Check the metric is valid
         if(!ApmJvmAlertCondition.Metric.contains(metric))
-            logOptionInvalid("metric");
+            logOptionInvalid(Opt.METRIC);
 
         return ApmJvmAlertCondition.builder()
             .name(name)
@@ -372,7 +336,7 @@ public class CreateAlertCondition extends BaseCommand
     {
         // Check the metric is valid
         if(!ServersAlertCondition.Metric.contains(metric))
-            logOptionInvalid("metric");
+            logOptionInvalid(Opt.METRIC);
 
         return ServersAlertCondition.builder()
             .name(name)
@@ -391,7 +355,7 @@ public class CreateAlertCondition extends BaseCommand
     {
         // Check the metric is valid
         if(!BrowserAlertCondition.Metric.contains(metric))
-            logOptionInvalid("metric");
+            logOptionInvalid(Opt.METRIC);
 
         return BrowserAlertCondition.builder()
             .name(name)
@@ -410,7 +374,7 @@ public class CreateAlertCondition extends BaseCommand
     {
         // Check the metric is valid
         if(!MobileAlertCondition.Metric.contains(metric))
-            logOptionInvalid("metric");
+            logOptionInvalid(Opt.METRIC);
 
         return MobileAlertCondition.builder()
             .name(name)

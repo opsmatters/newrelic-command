@@ -58,7 +58,7 @@ public class DeleteServer extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("i", "id", true, "The id of the server");
+        addOption(Opt.ID, "The id of the server");
     }
 
     /**
@@ -68,25 +68,21 @@ public class DeleteServer extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // ID option
-        if(cli.hasOption("i"))
+        if(hasOption(cli, Opt.ID, true))
         {
-            id = Long.parseLong(cli.getOptionValue("i"));
-            logOptionValue("id", id);
-        }
-        else
-        {
-            logOptionMissing("id");
+            id = Long.parseLong(getOptionValue(cli, Opt.ID));
+            logOptionValue(Opt.ID, id);
         }
     }
 
     /**
      * Delete the server.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting server: "+id);
 
         Optional<Server> server = Optional.absent();
@@ -105,7 +101,7 @@ public class DeleteServer extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Deleting  server: "+id);
 
         Server s = server.get();

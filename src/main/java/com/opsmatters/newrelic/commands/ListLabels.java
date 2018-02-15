@@ -70,14 +70,14 @@ public class ListLabels extends BaseCommand
     /**
      * List the labels.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting labels: ");
         Collection<Label> labels = api.labels().list();
-        if(verbose)
+        if(verbose())
             logger.info("Found "+labels.size()+" labels");
         for(Label label : labels)
             logger.info(label.getKey()

@@ -74,16 +74,16 @@ public class CreateInfraMetricAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert condition");
-        options.addOption("pi", "policy_id", true, "The id of the policy for the alert condition");
-        options.addOption("sv", "select_value", true, "The select_value of the condition");
-        options.addOption("et", "event_type", true, "The event_type of the condition, either \"SystemSample\", \"StorageSample\", \"ProcessSample\" or \"NetworkSample\"");
-        options.addOption("c", "comparison", true, "The operator of the condition, either \"above\", \"below\", or \"equal\"");
-        options.addOption("tf", "time_function", true, "The time_function of the condition, either \"all\" or \"any\", defaults to \"all\"");
-        options.addOption("d", "duration", true, "The duration of the condition in minutes");
-        options.addOption("ct", "critical_threshold", true, "The critical threshold of the condition");
-        options.addOption("wt", "warning_threshold", true, "The warning threshold of the condition, optional");
-        options.addOption("wc", "where_clause", true, "The where_clause of the condition, optional");
+        addOption(Opt.NAME, "The name of the alert condition");
+        addOption(Opt.POLICY_ID);
+        addOption(Opt.SELECT_VALUE);
+        addOption(Opt.EVENT_TYPE);
+        addOption(Opt.COMPARISON);
+        addOption(Opt.TIME_FUNCTION);
+        addOption(Opt.DURATION, "The duration of the condition in minutes");
+        addOption(Opt.CRITICAL_THRESHOLD);
+        addOption(Opt.WARNING_THRESHOLD);
+        addOption(Opt.WHERE_CLAUSE);
     }
 
     /**
@@ -93,128 +93,100 @@ public class CreateInfraMetricAlertCondition extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Policy id option
-        if(cli.hasOption("pi"))
+        if(hasOption(cli, Opt.POLICY_ID, true))
         {
-            policyId = Long.parseLong(cli.getOptionValue("pi"));
-            logOptionValue("policy_id", policyId);
-        }
-        else
-        {
-            logOptionMissing("policy_id");
+            policyId = Long.parseLong(getOptionValue(cli, Opt.POLICY_ID));
+            logOptionValue(Opt.POLICY_ID, policyId);
         }
 
         // Comparison option
-        if(cli.hasOption("c"))
+        if(hasOption(cli, Opt.COMPARISON, true))
         {
-            comparison = cli.getOptionValue("c");
+            comparison = getOptionValue(cli, Opt.COMPARISON);
 
             // Check the value is valid
             if(Operator.contains(comparison))
-                logOptionValue("comparison", comparison);
+                logOptionValue(Opt.COMPARISON, comparison);
             else
-                logOptionInvalid("comparison");
-        }
-        else
-        {
-            logOptionMissing("comparison");
+                logOptionInvalid(Opt.COMPARISON);
         }
 
         // Select value option
-        if(cli.hasOption("sv"))
+        if(hasOption(cli, Opt.SELECT_VALUE, true))
         {
-            selectValue = cli.getOptionValue("sv");
-            logOptionValue("select_value", selectValue);
-        }
-        else
-        {
-            logOptionMissing("select_value");
+            selectValue = getOptionValue(cli, Opt.SELECT_VALUE);
+            logOptionValue(Opt.SELECT_VALUE, selectValue);
         }
 
         // Event type option
-        if(cli.hasOption("et"))
+        if(hasOption(cli, Opt.EVENT_TYPE, true))
         {
-            eventType = cli.getOptionValue("et");
+            eventType = getOptionValue(cli, Opt.EVENT_TYPE);
 
             // Check the value is valid
             if(InfraMetricAlertCondition.EventType.contains(eventType))
-                logOptionValue("event_type", eventType);
+                logOptionValue(Opt.EVENT_TYPE, eventType);
             else
-                logOptionInvalid("event_type");
-        }
-        else
-        {
-            logOptionMissing("event_type");
+                logOptionInvalid(Opt.EVENT_TYPE);
         }
 
         // Time function option
-        if(cli.hasOption("tf"))
+        if(hasOption(cli, Opt.TIME_FUNCTION, false))
         {
-            timeFunction = cli.getOptionValue("tf");
+            timeFunction = getOptionValue(cli, Opt.TIME_FUNCTION);
 
             // Check the value is valid
             if(TimeFunction.contains(timeFunction))
-                logOptionValue("time_function", timeFunction);
+                logOptionValue(Opt.TIME_FUNCTION, timeFunction);
             else
-                logOptionInvalid("time_function");
+                logOptionInvalid(Opt.TIME_FUNCTION);
         }
 
         // Duration option
-        if(cli.hasOption("d"))
+        if(hasOption(cli, Opt.DURATION, true))
         {
-            duration = Integer.parseInt(cli.getOptionValue("d"));
-            logOptionValue("duration", duration);
-        }
-        else
-        {
-            logOptionMissing("duration");
+            duration = Integer.parseInt(getOptionValue(cli, Opt.DURATION));
+            logOptionValue(Opt.DURATION, duration);
         }
 
         // Critical threshold option
-        if(cli.hasOption("ct"))
+        if(hasOption(cli, Opt.CRITICAL_THRESHOLD, true))
         {
-            criticalThreshold = Integer.parseInt(cli.getOptionValue("ct"));
-            logOptionValue("critical_threshold", criticalThreshold);
-        }
-        else
-        {
-            logOptionMissing("critical_threshold");
+            criticalThreshold = Integer.parseInt(getOptionValue(cli, Opt.CRITICAL_THRESHOLD));
+            logOptionValue(Opt.CRITICAL_THRESHOLD, criticalThreshold);
         }
 
         // Warning threshold option
-        if(cli.hasOption("wt"))
+        if(hasOption(cli, Opt.WARNING_THRESHOLD, false))
         {
-            warningThreshold = Integer.parseInt(cli.getOptionValue("wt"));
-            logOptionValue("warning_threshold", warningThreshold);
+            warningThreshold = Integer.parseInt(getOptionValue(cli, Opt.WARNING_THRESHOLD));
+            logOptionValue(Opt.WARNING_THRESHOLD, warningThreshold);
         }
 
         // Where clause option
-        if(cli.hasOption("wc"))
+        if(hasOption(cli, Opt.WHERE_CLAUSE, false))
         {
-            whereClause = cli.getOptionValue("wc");
-            logOptionValue("where_clause", whereClause);
+            whereClause = getOptionValue(cli, Opt.WHERE_CLAUSE);
+            logOptionValue(Opt.WHERE_CLAUSE, whereClause);
         }
     }
 
     /**
      * Create the alert condition.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
         NewRelicInfraApi infraApi = getInfraApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policy: "+policyId);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(policyId);
@@ -224,7 +196,7 @@ public class CreateInfraMetricAlertCondition extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating infra metric condition: "+name);
 
         InfraMetricAlertCondition.Builder builder = InfraMetricAlertCondition.builder()

@@ -60,8 +60,8 @@ public class DeleteDeployment extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("ai", "application_id", true, "The id of the application");
-        options.addOption("di", "deployment_id", true, "The id of the deployment");
+        addOption(Opt.APPLICATION_ID);
+        addOption(Opt.DEPLOYMENT_ID);
     }
 
     /**
@@ -71,36 +71,28 @@ public class DeleteDeployment extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Application ID option
-        if(cli.hasOption("ai"))
+        if(hasOption(cli, Opt.APPLICATION_ID, true))
         {
-            applicationId = Long.parseLong(cli.getOptionValue("ai"));
-            logOptionValue("application_id", applicationId);
-        }
-        else
-        {
-            logOptionMissing("application_id");
+            applicationId = Long.parseLong(getOptionValue(cli, Opt.APPLICATION_ID));
+            logOptionValue(Opt.APPLICATION_ID, applicationId);
         }
 
         // Deployment ID option
-        if(cli.hasOption("di"))
+        if(hasOption(cli, Opt.DEPLOYMENT_ID, true))
         {
-            deploymentId = Long.parseLong(cli.getOptionValue("di"));
-            logOptionValue("deployment_id", deploymentId);
-        }
-        else
-        {
-            logOptionMissing("deployment_id");
+            deploymentId = Long.parseLong(getOptionValue(cli, Opt.DEPLOYMENT_ID));
+            logOptionValue(Opt.DEPLOYMENT_ID, deploymentId);
         }
     }
 
     /**
      * Delete the deployment.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting application: "+applicationId);
 
         Optional<Application> application = Optional.absent();
@@ -128,7 +120,7 @@ public class DeleteDeployment extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Deleting deployment: "+deploymentId);
 
         Deployment d = deployment.get();

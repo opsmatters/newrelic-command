@@ -58,7 +58,7 @@ public class DeleteAlertChannels extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert channels");
+        addOption(Opt.NAME, "The name of the alert channels");
     }
 
     /**
@@ -68,25 +68,21 @@ public class DeleteAlertChannels extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
     }
 
     /**
      * Delete the alert channels.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert channels: "+name);
         Collection<AlertChannel> channels = api.alertChannels().list(name);
         if(channels.size() == 0)
@@ -95,7 +91,7 @@ public class DeleteAlertChannels extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Deleting "+channels.size()+" alert channels: "+name);
 
         for(AlertChannel channel : channels)

@@ -74,16 +74,16 @@ public class CreateExternalServiceAlertCondition extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert condition");
-        options.addOption("t", "type", true, "The type of the alert condition");
-        options.addOption("pi", "policy_id", true, "The id of the policy for the alert condition");
-        options.addOption("m", "metric", true, "The metric of the condition, depends on the type");
-        options.addOption("p", "priority", true, "The priority of the condition, either \"critical\" or \"warning\"");
-        options.addOption("d", "duration", true, "The duration of the condition, either 5, 10, 15, 30, 60, or 120 minutes");
-        options.addOption("tf", "time_function", true, "The time_function of the condition, either \"all\" or \"any\", defaults to \"all\"");
-        options.addOption("th", "threshold", true, "The threshold of the condition");
-        options.addOption("o", "operator", true, "The operator of the condition, either \"above\", \"below\", or \"equal\"");
-        options.addOption("u", "url", true, "The URL of the external service being monitored");
+        addOption(Opt.NAME, "The name of the alert condition");
+        addOption(Opt.TYPE, "The type of the alert condition");
+        addOption(Opt.POLICY_ID);
+        addOption(Opt.METRIC);
+        addOption(Opt.PRIORITY);
+        addOption(Opt.DURATION, "The duration of the condition, either 5, 10, 15, 30, 60, or 120 minutes");
+        addOption(Opt.TIME_FUNCTION);
+        addOption(Opt.THRESHOLD);
+        addOption(Opt.OPERATOR);
+        addOption(Opt.URL, "The URL of the external service being monitored");
     }
 
     /**
@@ -93,145 +93,109 @@ public class CreateExternalServiceAlertCondition extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Type option
-        if(cli.hasOption("t"))
+        if(hasOption(cli, Opt.TYPE, true))
         {
-            type = cli.getOptionValue("t");
+            type = getOptionValue(cli, Opt.TYPE);
 
             // Check the value is valid
             if(ExternalServiceAlertCondition.ConditionType.contains(type))
-                logOptionValue("type", type);
+                logOptionValue(Opt.TYPE, type);
             else
-                logOptionInvalid("type");
-        }
-        else
-        {
-            logOptionMissing("type");
+                logOptionInvalid(Opt.TYPE);
         }
 
         // Policy id option
-        if(cli.hasOption("pi"))
+        if(hasOption(cli, Opt.POLICY_ID, true))
         {
-            policyId = Long.parseLong(cli.getOptionValue("pi"));
-            logOptionValue("policy_id", policyId);
-        }
-        else
-        {
-            logOptionMissing("policy_id");
+            policyId = Long.parseLong(getOptionValue(cli, Opt.POLICY_ID));
+            logOptionValue(Opt.POLICY_ID, policyId);
         }
 
         // Metric option
-        if(cli.hasOption("m"))
+        if(hasOption(cli, Opt.METRIC, true))
         {
-            metric = cli.getOptionValue("m");
-            logOptionValue("metric", metric);
-        }
-        else
-        {
-            logOptionMissing("metric");
+            metric = getOptionValue(cli, Opt.METRIC);
+            logOptionValue(Opt.METRIC, metric);
         }
 
         // Priority option
-        if(cli.hasOption("p"))
+        if(hasOption(cli, Opt.PRIORITY, true))
         {
-            priority = cli.getOptionValue("p");
+            priority = getOptionValue(cli, Opt.PRIORITY);
 
             // Check the value is valid
             if(Priority.contains(priority))
-                logOptionValue("priority", priority);
+                logOptionValue(Opt.PRIORITY, priority);
             else
-                logOptionInvalid("priority");
-        }
-        else
-        {
-            logOptionMissing("priority");
+                logOptionInvalid(Opt.PRIORITY);
         }
 
         // Duration option
-        if(cli.hasOption("d"))
+        if(hasOption(cli, Opt.DURATION, true))
         {
-            duration = Integer.parseInt(cli.getOptionValue("d"));
+            duration = Integer.parseInt(getOptionValue(cli, Opt.DURATION));
 
             // Check the value is valid
             if(Term.Duration.contains(duration))
-                logOptionValue("duration", duration);
+                logOptionValue(Opt.DURATION, duration);
             else
-                logOptionInvalid("duration");
-        }
-        else
-        {
-            logOptionMissing("duration");
+                logOptionInvalid(Opt.DURATION);
         }
 
         // Time function option
-        if(cli.hasOption("tf"))
+        if(hasOption(cli, Opt.TIME_FUNCTION, false))
         {
-            timeFunction = cli.getOptionValue("tf");
+            timeFunction = getOptionValue(cli, Opt.TIME_FUNCTION);
 
             // Check the value is valid
             if(TimeFunction.contains(timeFunction))
-                logOptionValue("time_function", timeFunction);
+                logOptionValue(Opt.TIME_FUNCTION, timeFunction);
             else
-                logOptionInvalid("time_function");
+                logOptionInvalid(Opt.TIME_FUNCTION);
         }
 
         // Threshold option
-        if(cli.hasOption("th"))
+        if(hasOption(cli, Opt.THRESHOLD, true))
         {
-            threshold = cli.getOptionValue("th");
-            logOptionValue("threshold", threshold);
-        }
-        else
-        {
-            logOptionMissing("threshold");
+            threshold = getOptionValue(cli, Opt.THRESHOLD);
+            logOptionValue(Opt.THRESHOLD, threshold);
         }
 
         // Operator option
-        if(cli.hasOption("o"))
+        if(hasOption(cli, Opt.OPERATOR, true))
         {
-            operator = cli.getOptionValue("o");
+            operator = getOptionValue(cli, Opt.OPERATOR);
 
             // Check the value is valid
             if(Operator.contains(operator))
-                logOptionValue("operator", operator);
+                logOptionValue(Opt.OPERATOR, operator);
             else
-                logOptionInvalid("operator");
-        }
-        else
-        {
-            logOptionMissing("operator");
+                logOptionInvalid(Opt.OPERATOR);
         }
 
         // URL option
-        if(cli.hasOption("u"))
+        if(hasOption(cli, Opt.URL, true))
         {
-            externalServiceUrl = cli.getOptionValue("u");
-            logOptionValue("url", externalServiceUrl);
-        }
-        else
-        {
-            logOptionMissing("url");
+            externalServiceUrl = getOptionValue(cli, Opt.URL);
+            logOptionValue(Opt.URL, externalServiceUrl);
         }
     }
 
     /**
      * Create the alert condition.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policy: "+policyId);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(policyId);
@@ -241,7 +205,7 @@ public class CreateExternalServiceAlertCondition extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating external service alert condition: "+name);
 
         ExternalServiceAlertCondition c = null;
@@ -280,7 +244,7 @@ public class CreateExternalServiceAlertCondition extends BaseCommand
     {
         // Check the metric is valid
         if(!ApmExternalServiceAlertCondition.Metric.contains(metric))
-            logOptionInvalid("metric");
+            logOptionInvalid(Opt.METRIC);
 
         return ApmExternalServiceAlertCondition.builder()
             .name(name)
@@ -298,7 +262,7 @@ public class CreateExternalServiceAlertCondition extends BaseCommand
     {
         // Check the metric is valid
         if(!MobileExternalServiceAlertCondition.Metric.contains(metric))
-            logOptionInvalid("metric");
+            logOptionInvalid(Opt.METRIC);
 
         return MobileExternalServiceAlertCondition.builder()
             .name(name)

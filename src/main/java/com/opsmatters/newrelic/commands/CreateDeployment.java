@@ -63,11 +63,11 @@ public class CreateDeployment extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("ai", "application_id", true, "The id of the application");
-        options.addOption("r", "revision", true, "The revision of the deployment");
-        options.addOption("c", "changelog", true, "The changelog of the deployment");
-        options.addOption("d", "description", true, "The description of the deployment");
-        options.addOption("u", "user", true, "The user of the deployment");
+        addOption(Opt.APPLICATION_ID);
+        addOption(Opt.REVISION);
+        addOption(Opt.CHANGELOG);
+        addOption(Opt.DESCRIPTION, "The description of the deployment");
+        addOption(Opt.USER, "The user of the deployment");
     }
 
     /**
@@ -77,57 +77,49 @@ public class CreateDeployment extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Application ID option
-        if(cli.hasOption("ai"))
+        if(hasOption(cli, Opt.APPLICATION_ID, true))
         {
-            applicationId = Long.parseLong(cli.getOptionValue("ai"));
-            logOptionValue("application_id", applicationId);
-        }
-        else
-        {
-            logOptionMissing("application_id");
+            applicationId = Long.parseLong(getOptionValue(cli, Opt.APPLICATION_ID));
+            logOptionValue(Opt.APPLICATION_ID, applicationId);
         }
 
         // Revision option
-        if(cli.hasOption("r"))
+        if(hasOption(cli, Opt.REVISION, true))
         {
-            revision = cli.getOptionValue("r");
-            logOptionValue("revision", revision);
-        }
-        else
-        {
-            logOptionMissing("revision");
+            revision = getOptionValue(cli, Opt.REVISION);
+            logOptionValue(Opt.REVISION, revision);
         }
 
         // Changelog option
-        if(cli.hasOption("c"))
+        if(hasOption(cli, Opt.CHANGELOG, false))
         {
-            changelog = cli.getOptionValue("c");
-            logOptionValue("changelog", changelog);
+            changelog = getOptionValue(cli, Opt.CHANGELOG);
+            logOptionValue(Opt.CHANGELOG, changelog);
         }
 
         // Description option
-        if(cli.hasOption("d"))
+        if(hasOption(cli, Opt.DESCRIPTION, false))
         {
-            description = cli.getOptionValue("d");
-            logOptionValue("description", description);
+            description = getOptionValue(cli, Opt.DESCRIPTION);
+            logOptionValue(Opt.DESCRIPTION, description);
         }
 
         // User option
-        if(cli.hasOption("u"))
+        if(hasOption(cli, Opt.USER, false))
         {
-            user = cli.getOptionValue("u");
-            logOptionValue("user", user);
+            user = getOptionValue(cli, Opt.USER);
+            logOptionValue(Opt.USER, user);
         }
     }
 
     /**
      * Create the deployment.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting application: "+applicationId);
 
         Optional<Application> application = Optional.absent();
@@ -146,7 +138,7 @@ public class CreateDeployment extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating deployment: "+revision);
 
         Deployment d = Deployment.builder()

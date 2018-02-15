@@ -61,8 +61,8 @@ public class DeleteExternalServiceAlertConditions extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("pi", "policy_id", true, "The id of the policy for the alert conditions");
-        options.addOption("n", "name", true, "The name of the alert conditions");
+        addOption(Opt.POLICY_ID);
+        addOption(Opt.NAME, "The name of the alert conditions");
     }
 
     /**
@@ -72,36 +72,28 @@ public class DeleteExternalServiceAlertConditions extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Policy id option
-        if(cli.hasOption("pi"))
+        if(hasOption(cli, Opt.POLICY_ID, true))
         {
-            policyId = Long.parseLong(cli.getOptionValue("pi"));
-            logOptionValue("policy_id", policyId);
-        }
-        else
-        {
-            logOptionMissing("policy_id");
+            policyId = Long.parseLong(getOptionValue(cli, Opt.POLICY_ID));
+            logOptionValue(Opt.POLICY_ID, policyId);
         }
 
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
     }
 
     /**
      * Delete the alert conditions.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert policy: "+policyId);
 
         Optional<AlertPolicy> policy = api.alertPolicies().show(policyId);
@@ -111,7 +103,7 @@ public class DeleteExternalServiceAlertConditions extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting external service alert conditions: "+name);
 
         Collection<ExternalServiceAlertCondition> conditions = api.externalServiceAlertConditions().list(policyId, name);
@@ -121,7 +113,7 @@ public class DeleteExternalServiceAlertConditions extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Deleting "+conditions.size()+" external service alert conditions: "+name);
 
         for(ExternalServiceAlertCondition condition : conditions)

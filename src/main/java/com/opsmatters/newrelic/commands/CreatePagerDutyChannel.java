@@ -59,8 +59,8 @@ public class CreatePagerDutyChannel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert channel");
-        options.addOption("sk", "service_key", true, "The service key for the PagerDuty channel");
+        addOption(Opt.NAME, "The name of the alert channel");
+        addOption(Opt.SERVICE_KEY);
     }
 
     /**
@@ -70,36 +70,28 @@ public class CreatePagerDutyChannel extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Service key option
-        if(cli.hasOption("sk"))
+        if(hasOption(cli, Opt.SERVICE_KEY, true))
         {
-            serviceKey = cli.getOptionValue("sk");
-            logOptionValue("service_key", serviceKey);
-        }
-        else
-        {
-            logOptionMissing("service_key");
+            serviceKey = getOptionValue(cli, Opt.SERVICE_KEY);
+            logOptionValue(Opt.SERVICE_KEY, serviceKey);
         }
     }
 
     /**
      * Create the PagerDuty alert channel.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating PagerDuty channel: "+name);
 
         PagerDutyChannel c = PagerDutyChannel.builder()

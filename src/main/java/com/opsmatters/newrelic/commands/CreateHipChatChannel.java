@@ -60,9 +60,9 @@ public class CreateHipChatChannel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert channel");
-        options.addOption("at", "auth_token", true, "The auth token for the HipChat channel");
-        options.addOption("r", "room", true, "The HipChat room");
+        addOption(Opt.NAME, "The name of the alert channel");
+        addOption(Opt.AUTH_TOKEN);
+        addOption(Opt.ROOM, "The HipChat room");
     }
 
     /**
@@ -72,47 +72,35 @@ public class CreateHipChatChannel extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Auth token option
-        if(cli.hasOption("at"))
+        if(hasOption(cli, Opt.AUTH_TOKEN, true))
         {
-            authToken = cli.getOptionValue("at");
-            logOptionValue("auth_token", authToken);
-        }
-        else
-        {
-            logOptionMissing("auth_token");
+            authToken = getOptionValue(cli, Opt.AUTH_TOKEN);
+            logOptionValue(Opt.AUTH_TOKEN, authToken);
         }
 
         // Room option
-        if(cli.hasOption("r"))
+        if(hasOption(cli, Opt.ROOM, true))
         {
-            room = cli.getOptionValue("r");
-            logOptionValue("room", room);
-        }
-        else
-        {
-            logOptionMissing("room");
+            room = getOptionValue(cli, Opt.ROOM);
+            logOptionValue(Opt.ROOM, room);
         }
     }
 
     /**
      * Create the HipChat alert channel.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating HipChat channel: "+name);
 
         HipChatChannel c = HipChatChannel.builder()

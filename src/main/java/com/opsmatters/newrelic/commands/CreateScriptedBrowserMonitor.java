@@ -64,10 +64,10 @@ public class CreateScriptedBrowserMonitor extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the monitor");
-        options.addOption("f", "frequency", true, "The frequency of the monitor in minutes, either 1, 5, 10, 15, 30, 60, 360, 720, or 1440, defaults to 10 minutes");
-        options.addOption("s", "sla_threshold", true, "The SLA threshold of the monitor (Apdex T), defaults to 7.0");
-        options.addOption("l", "locations", true, "Comma-separated list of locations");
+        addOption(Opt.NAME, "The name of the monitor");
+        addOption(Opt.FREQUENCY);
+        addOption(Opt.SLA_THRESHOLD);
+        addOption(Opt.LOCATIONS);
     }
 
     /**
@@ -77,57 +77,49 @@ public class CreateScriptedBrowserMonitor extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // SLA threshold option (Apdex T)
-        if(cli.hasOption("s"))
+        if(hasOption(cli, Opt.SLA_THRESHOLD, false))
         {
-            slaThreshold = Double.parseDouble(cli.getOptionValue("s"));
-            logOptionValue("sla_threshold", slaThreshold);
+            slaThreshold = Double.parseDouble(getOptionValue(cli, Opt.SLA_THRESHOLD));
+            logOptionValue(Opt.SLA_THRESHOLD, slaThreshold);
         }
 
         // Frequency option
-        if(cli.hasOption("f"))
+        if(hasOption(cli, Opt.FREQUENCY, false))
         {
-            frequency = Integer.parseInt(cli.getOptionValue("f"));
+            frequency = Integer.parseInt(getOptionValue(cli, Opt.FREQUENCY));
 
             // Check the value is valid
             if(Monitor.Frequency.contains(frequency))
-                logOptionValue("frequency", frequency);
+                logOptionValue(Opt.FREQUENCY, frequency);
             else
-                logOptionInvalid("frequency");
+                logOptionInvalid(Opt.FREQUENCY);
         }
 
         // Locations option
-        if(cli.hasOption("l"))
+        if(hasOption(cli, Opt.LOCATIONS, true))
         {
-            String[] list = cli.getOptionValue("l").split(",");
+            String[] list = getOptionValue(cli, Opt.LOCATIONS).split(",");
             for(String location : list)
                 locations.add(location.trim());
-            logOptionValue("locations", locations.toString());
-        }
-        else
-        {
-            logOptionMissing("locations");
+            logOptionValue(Opt.LOCATIONS, locations.toString());
         }
     }
 
     /**
      * Create the monitor.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicSyntheticsApi syntheticsApi = getSyntheticsApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating monitor: "+name);
 
         Monitor sm = ScriptBrowserMonitor.builder()

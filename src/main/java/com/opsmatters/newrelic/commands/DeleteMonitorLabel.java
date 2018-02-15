@@ -63,10 +63,10 @@ public class DeleteMonitorLabel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("mi", "monitor_id", true, "The id of the monitor");
-        options.addOption("c", "category", true, "The category of the label");
-        options.addOption("n", "name", true, "The name of the label");
-        options.addOption("k", "key", true, "The key of the label");
+        addOption(Opt.MONITOR_ID);
+        addOption(Opt.CATEGORY);
+        addOption(Opt.NAME, "The name of the label");
+        addOption(Opt.KEY, "The key of the label");
     }
 
     /**
@@ -76,35 +76,31 @@ public class DeleteMonitorLabel extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Monitor ID option
-        if(cli.hasOption("mi"))
+        if(hasOption(cli, Opt.MONITOR_ID, true))
         {
-            monitorId = cli.getOptionValue("mi");
-            logOptionValue("monitor_id", monitorId);
-        }
-        else
-        {
-            logOptionMissing("monitor_id");
+            monitorId = getOptionValue(cli, Opt.MONITOR_ID);
+            logOptionValue(Opt.MONITOR_ID, monitorId);
         }
 
         // Category option
-        if(cli.hasOption("c"))
+        if(hasOption(cli, Opt.CATEGORY, false))
         {
-            category = cli.getOptionValue("c");
-            logOptionValue("category", category);
+            category = getOptionValue(cli, Opt.CATEGORY);
+            logOptionValue(Opt.CATEGORY, category);
         }
 
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, false))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Key option
-        if(cli.hasOption("k"))
+        if(hasOption(cli, Opt.KEY, false))
         {
-            key = cli.getOptionValue("k");
-            logOptionValue("key", key);
+            key = getOptionValue(cli, Opt.KEY);
+            logOptionValue(Opt.KEY, key);
         }
         else if(category != null && name != null)
         {
@@ -112,14 +108,14 @@ public class DeleteMonitorLabel extends BaseCommand
         }
         else
         {
-            logOptionMissing("key");
+            logOptionMissing(Opt.KEY);
         }
     }
 
     /**
      * Delete the monitor label.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
         NewRelicSyntheticsApi syntheticsApi = getSyntheticsApi();
@@ -140,7 +136,7 @@ public class DeleteMonitorLabel extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting label: "+key);
 
         Optional<Label> label = api.labels().show(key);
@@ -150,7 +146,7 @@ public class DeleteMonitorLabel extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Deleting label: "+key);
 
         Label l = label.get();

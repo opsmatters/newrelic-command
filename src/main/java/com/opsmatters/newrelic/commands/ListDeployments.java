@@ -60,7 +60,7 @@ public class ListDeployments extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("ai", "application_id", true, "The id of the application");
+        addOption(Opt.APPLICATION_ID);
     }
 
     /**
@@ -70,25 +70,21 @@ public class ListDeployments extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Application ID option
-        if(cli.hasOption("ai"))
+        if(hasOption(cli, Opt.APPLICATION_ID, true))
         {
-            applicationId = Long.parseLong(cli.getOptionValue("ai"));
-            logOptionValue("application_id", applicationId);
-        }
-        else
-        {
-            logOptionMissing("application_id");
+            applicationId = Long.parseLong(getOptionValue(cli, Opt.APPLICATION_ID));
+            logOptionValue(Opt.APPLICATION_ID, applicationId);
         }
     }
 
     /**
      * List the applications.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting application: "+applicationId);
 
         Optional<Application> application = Optional.absent();
@@ -109,10 +105,10 @@ public class ListDeployments extends BaseCommand
 
         Application a = application.get();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting deployments: "+applicationId);
         Collection<Deployment> deployments = api.deployments().list(applicationId);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+deployments.size()+" deployments");
         for(Deployment deployment : deployments)
             logger.info(deployment.getId()+" - "+deployment.getRevision()+" ("+deployment.getDescription()+")");

@@ -62,11 +62,11 @@ public class CreateOpsGenieChannel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert channel");
-        options.addOption("ak", "api_key", true, "The OpsGenie API key");
-        options.addOption("tm", "teams", true, "The teams for the OpsGenie channel");
-        options.addOption("tg", "tags", true, "The tags for the OpsGenie channel");
-        options.addOption("r", "recipients", true, "The recipients of the OpsGenie channel");
+        addOption(Opt.NAME, "The name of the alert channel");
+        addOption(Opt.API_KEY);
+        addOption(Opt.TEAMS);
+        addOption(Opt.TAGS);
+        addOption(Opt.RECIPIENTS, "The recipients of the OpsGenie channel");
     }
 
     /**
@@ -76,69 +76,49 @@ public class CreateOpsGenieChannel extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // API key option
-        if(cli.hasOption("ak"))
+        if(hasOption(cli, Opt.API_KEY, true))
         {
-            apiKey = cli.getOptionValue("ak");
-            logOptionValue("api_key", apiKey);
-        }
-        else
-        {
-            logOptionMissing("api_key");
+            apiKey = getOptionValue(cli, Opt.API_KEY);
+            logOptionValue(Opt.API_KEY, apiKey);
         }
 
         // Teams option
-        if(cli.hasOption("tm"))
+        if(hasOption(cli, Opt.TEAMS, true))
         {
-            teams = cli.getOptionValue("tm");
-            logOptionValue("teams", teams);
-        }
-        else
-        {
-            logOptionMissing("teams");
+            teams = getOptionValue(cli, Opt.TEAMS);
+            logOptionValue(Opt.TEAMS, teams);
         }
 
         // Tags option
-        if(cli.hasOption("tg"))
+        if(hasOption(cli, Opt.TAGS, true))
         {
-            tags = cli.getOptionValue("tg");
-            logOptionValue("tags", tags);
-        }
-        else
-        {
-            logOptionMissing("tags");
+            tags = getOptionValue(cli, Opt.TAGS);
+            logOptionValue(Opt.TAGS, tags);
         }
 
         // Recipients option
-        if(cli.hasOption("r"))
+        if(hasOption(cli, Opt.RECIPIENTS, true))
         {
-            recipients = cli.getOptionValue("r");
-            logOptionValue("recipients", recipients);
-        }
-        else
-        {
-            logOptionMissing("recipients");
+            recipients = getOptionValue(cli, Opt.RECIPIENTS);
+            logOptionValue(Opt.RECIPIENTS, recipients);
         }
     }
 
     /**
      * Create the OpsGenie alert channel.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating OpsGenie channel: "+name);
 
         OpsGenieChannel c = OpsGenieChannel.builder()

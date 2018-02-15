@@ -60,7 +60,7 @@ public class ListServerAlertConditions extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("si", "server_id", true, "The id of the server");
+        addOption(Opt.SERVER_ID);
     }
 
     /**
@@ -69,26 +69,22 @@ public class ListServerAlertConditions extends BaseCommand
      */
     protected void parse(CommandLine cli)
     {
-        // Server id option
-        if(cli.hasOption("si"))
+        // Server ID option
+        if(hasOption(cli, Opt.SERVER_ID, true))
         {
-            serverId = Long.parseLong(cli.getOptionValue("si"));
-            logOptionValue("server_id", serverId);
-        }
-        else
-        {
-            logOptionMissing("server_id");
+            serverId = Long.parseLong(getOptionValue(cli, Opt.SERVER_ID));
+            logOptionValue(Opt.SERVER_ID, serverId);
         }
     }
 
     /**
      * List the alert conditions for the server.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting server: "+serverId);
 
         Optional<Server> server = Optional.absent();
@@ -109,10 +105,10 @@ public class ListServerAlertConditions extends BaseCommand
 
         Server s = server.get();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert conditions for server: "+s.getId());
         Collection<AlertCondition> conditions = api.alertEntityConditions().list(s);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+conditions.size()+" alert conditions");
         for(AlertCondition condition : conditions)
             logger.info(condition.getId()+" - "+condition.getName()+" ("+condition.getType()+")");

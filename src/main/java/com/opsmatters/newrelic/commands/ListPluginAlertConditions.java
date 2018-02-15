@@ -60,7 +60,7 @@ public class ListPluginAlertConditions extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("pl", "plugin_id", true, "The id of the plugin");
+        addOption(Opt.PLUGIN_ID);
     }
 
     /**
@@ -70,25 +70,21 @@ public class ListPluginAlertConditions extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Plugin id option
-        if(cli.hasOption("pl"))
+        if(hasOption(cli, Opt.PLUGIN_ID, true))
         {
-            pluginId = Long.parseLong(cli.getOptionValue("pl"));
-            logOptionValue("plugin_id", pluginId);
-        }
-        else
-        {
-            logOptionMissing("plugin_id");
+            pluginId = Long.parseLong(getOptionValue(cli, Opt.PLUGIN_ID));
+            logOptionValue(Opt.PLUGIN_ID, pluginId);
         }
     }
 
     /**
      * List the alert conditions for the plugin.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting plugin: "+pluginId);
 
         Optional<Plugin> plugin = Optional.absent();
@@ -109,10 +105,10 @@ public class ListPluginAlertConditions extends BaseCommand
 
         Plugin pl = plugin.get();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert conditions for plugin: "+pl.getId());
         Collection<AlertCondition> conditions = api.alertEntityConditions().list(pl);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+conditions.size()+" alert conditions");
         for(AlertCondition condition : conditions)
             logger.info(condition.getId()+" - "+condition.getName()+" ("+condition.getType()+")");

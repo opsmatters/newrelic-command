@@ -60,9 +60,9 @@ public class CreateEmailChannel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("n", "name", true, "The name of the alert channel");
-        options.addOption("r", "recipients", true, "The email recipients of the alert channel");
-        options.addOption("ija", "include_json_attachment", false, "Include the details with the message as a JSON attachment, defaults to false");
+        addOption(Opt.NAME, "The name of the alert channel");
+        addOption(Opt.RECIPIENTS, "The email recipients of the alert channel");
+        addOption(Opt.INCLUDE_JSON_ATTACHMENT);
     }
 
     /**
@@ -72,43 +72,35 @@ public class CreateEmailChannel extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
 
         // Recipients option
-        if(cli.hasOption("r"))
+        if(hasOption(cli, Opt.RECIPIENTS, true))
         {
-            recipients = cli.getOptionValue("r");
-            logOptionValue("recipients", recipients);
-        }
-        else
-        {
-            logOptionMissing("recipients");
+            recipients = getOptionValue(cli, Opt.RECIPIENTS);
+            logOptionValue(Opt.RECIPIENTS, recipients);
         }
 
         // IncludeJsonAttachment option
-        if(cli.hasOption("ija"))
+        if(hasOption(cli, Opt.INCLUDE_JSON_ATTACHMENT, false))
         {
             includeJsonAttachment = true;
-            logOptionValue("includeJsonAttachment", includeJsonAttachment);
+            logOptionValue(Opt.INCLUDE_JSON_ATTACHMENT, includeJsonAttachment);
         }
     }
 
     /**
      * Create the Email alert channel.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating Email channel: "+name);
 
         EmailChannel c = EmailChannel.builder()

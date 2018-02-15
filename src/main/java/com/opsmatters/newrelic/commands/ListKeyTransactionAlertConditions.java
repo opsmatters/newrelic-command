@@ -60,7 +60,7 @@ public class ListKeyTransactionAlertConditions extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("ti", "transaction_id", true, "The id of the key transaction");
+        addOption(Opt.TRANSACTION_ID);
     }
 
     /**
@@ -70,25 +70,21 @@ public class ListKeyTransactionAlertConditions extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Transaction id option
-        if(cli.hasOption("ti"))
+        if(hasOption(cli, Opt.TRANSACTION_ID, true))
         {
-            transactionId = Long.parseLong(cli.getOptionValue("ti"));
-            logOptionValue("transaction_id", transactionId);
-        }
-        else
-        {
-            logOptionMissing("transaction_id");
+            transactionId = Long.parseLong(getOptionValue(cli, Opt.TRANSACTION_ID));
+            logOptionValue(Opt.TRANSACTION_ID, transactionId);
         }
     }
 
     /**
      * List the alert conditions for the key transaction.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicApi api = getApi();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting key transaction: "+transactionId);
 
         Optional<KeyTransaction> transaction = Optional.absent();
@@ -109,10 +105,10 @@ public class ListKeyTransactionAlertConditions extends BaseCommand
 
         KeyTransaction t = transaction.get();
 
-        if(verbose)
+        if(verbose())
             logger.info("Getting alert conditions for key transaction: "+t.getId());
         Collection<AlertCondition> conditions = api.alertEntityConditions().list(t);
-        if(verbose)
+        if(verbose())
             logger.info("Found "+conditions.size()+" alert conditions");
         for(AlertCondition condition : conditions)
             logger.info(condition.getId()+" - "+condition.getName()+" ("+condition.getType()+")");

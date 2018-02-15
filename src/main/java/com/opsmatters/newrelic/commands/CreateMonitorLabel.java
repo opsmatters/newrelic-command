@@ -61,9 +61,9 @@ public class CreateMonitorLabel extends BaseCommand
     protected void options()
     {
         super.options();
-        options.addOption("mi", "monitor_id", true, "The id of the monitor");
-        options.addOption("c", "category", true, "The category of the label");
-        options.addOption("n", "name", true, "The name of the label");
+        addOption(Opt.MONITOR_ID);
+        addOption(Opt.CATEGORY);
+        addOption(Opt.NAME, "The name of the label");
     }
 
     /**
@@ -73,43 +73,31 @@ public class CreateMonitorLabel extends BaseCommand
     protected void parse(CommandLine cli)
     {
         // Monitor ID option
-        if(cli.hasOption("mi"))
+        if(hasOption(cli, Opt.MONITOR_ID, true))
         {
-            monitorId = cli.getOptionValue("mi");
-            logOptionValue("monitor_id", monitorId);
-        }
-        else
-        {
-            logOptionMissing("monitor_id");
+            monitorId = getOptionValue(cli, Opt.MONITOR_ID);
+            logOptionValue(Opt.MONITOR_ID, monitorId);
         }
 
         // Category option
-        if(cli.hasOption("c"))
+        if(hasOption(cli, Opt.CATEGORY, true))
         {
-            category = cli.getOptionValue("c");
-            logOptionValue("category", category);
-        }
-        else
-        {
-            logOptionMissing("category");
+            category = getOptionValue(cli, Opt.CATEGORY);
+            logOptionValue(Opt.CATEGORY, category);
         }
 
         // Name option
-        if(cli.hasOption("n"))
+        if(hasOption(cli, Opt.NAME, true))
         {
-            name = cli.getOptionValue("n");
-            logOptionValue("name", name);
-        }
-        else
-        {
-            logOptionMissing("name");
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
     }
 
     /**
      * Create the monitor label.
      */
-    protected void operation()
+    protected void execute()
     {
         NewRelicSyntheticsApi syntheticsApi = getSyntheticsApi();
 
@@ -129,7 +117,7 @@ public class CreateMonitorLabel extends BaseCommand
             return;
         }
 
-        if(verbose)
+        if(verbose())
             logger.info("Creating label: "+Label.getKey(category, name));
 
         Label l = Label.builder()
