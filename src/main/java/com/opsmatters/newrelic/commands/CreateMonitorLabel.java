@@ -22,6 +22,7 @@ import com.google.common.base.Optional;
 import com.opsmatters.newrelic.api.NewRelicSyntheticsApi;
 import com.opsmatters.newrelic.api.model.synthetics.Monitor;
 import com.opsmatters.newrelic.api.model.labels.Label;
+import com.opsmatters.newrelic.api.exceptions.ErrorResponseException;
 
 /**
  * Implements the New Relic command line option to create a Synthetics monitor label.  
@@ -106,7 +107,7 @@ public class CreateMonitorLabel extends BaseCommand
         {
             monitor = syntheticsApi.monitors().show(monitorId);
         }
-        catch(RuntimeException e)
+        catch(ErrorResponseException e)
         {
             // throw 404 if not found
         }

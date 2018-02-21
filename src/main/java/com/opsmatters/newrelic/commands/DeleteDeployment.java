@@ -22,6 +22,7 @@ import com.google.common.base.Optional;
 import com.opsmatters.newrelic.api.NewRelicApi;
 import com.opsmatters.newrelic.api.model.applications.Application;
 import com.opsmatters.newrelic.api.model.deployments.Deployment;
+import com.opsmatters.newrelic.api.exceptions.ErrorResponseException;
 
 /**
  * Implements the New Relic command line option to delete an application deployment.  
@@ -100,7 +101,7 @@ public class DeleteDeployment extends BaseCommand
         {
             application = api.applications().show(applicationId);
         }
-        catch(RuntimeException e)
+        catch(ErrorResponseException e)
         {
             // throw 404 if not found
         }

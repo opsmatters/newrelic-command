@@ -23,6 +23,7 @@ import com.opsmatters.newrelic.api.NewRelicApi;
 import com.opsmatters.newrelic.api.model.applications.MobileApplication;
 import com.opsmatters.newrelic.api.model.alerts.policies.AlertPolicy;
 import com.opsmatters.newrelic.api.model.alerts.conditions.AlertCondition;
+import com.opsmatters.newrelic.api.exceptions.ErrorResponseException;
 
 /**
  * Implements the New Relic command line option to add an alert condition to a mobile application.  
@@ -110,7 +111,7 @@ public class AddMobileApplicationAlertCondition extends BaseCommand
         {
             application = api.mobileApplications().show(applicationId);
         }
-        catch(RuntimeException e)
+        catch(ErrorResponseException e)
         {
             // throw 404 if not found
         }

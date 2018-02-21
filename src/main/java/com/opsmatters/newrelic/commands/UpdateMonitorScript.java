@@ -25,6 +25,7 @@ import com.opsmatters.newrelic.api.NewRelicSyntheticsApi;
 import com.opsmatters.newrelic.api.model.synthetics.Monitor;
 import com.opsmatters.newrelic.api.model.synthetics.Script;
 import com.opsmatters.newrelic.api.model.synthetics.ScriptLocation;
+import com.opsmatters.newrelic.api.exceptions.ErrorResponseException;
 
 /**
  * Implements the New Relic command line option to update a Synthetics scripted monitor to add a script.  
@@ -112,7 +113,7 @@ public class UpdateMonitorScript extends BaseCommand
         {
             monitor = syntheticsApi.monitors().show(monitorId);
         }
-        catch(RuntimeException e)
+        catch(ErrorResponseException e)
         {
             // throw 404 if not found
         }

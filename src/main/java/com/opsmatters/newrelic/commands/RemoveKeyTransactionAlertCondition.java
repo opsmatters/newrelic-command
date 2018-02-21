@@ -23,6 +23,7 @@ import com.opsmatters.newrelic.api.NewRelicApi;
 import com.opsmatters.newrelic.api.model.transactions.KeyTransaction;
 import com.opsmatters.newrelic.api.model.alerts.policies.AlertPolicy;
 import com.opsmatters.newrelic.api.model.alerts.conditions.AlertCondition;
+import com.opsmatters.newrelic.api.exceptions.ErrorResponseException;
 
 /**
  * Implements the New Relic command line option to remove an alert condition from a key transaction.  
@@ -110,7 +111,7 @@ public class RemoveKeyTransactionAlertCondition extends BaseCommand
         {
             transaction = api.keyTransactions().show(transactionId);
         }
-        catch(RuntimeException e)
+        catch(ErrorResponseException e)
         {
             // throw 404 if not found
         }

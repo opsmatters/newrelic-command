@@ -21,6 +21,7 @@ import org.apache.commons.cli.CommandLine;
 import com.google.common.base.Optional;
 import com.opsmatters.newrelic.api.NewRelicSyntheticsApi;
 import com.opsmatters.newrelic.api.model.synthetics.Monitor;
+import com.opsmatters.newrelic.api.exceptions.ErrorResponseException;
 
 /**
  * Implements the New Relic command line option to delete a Synthetics monitor.  
@@ -87,7 +88,7 @@ public class DeleteMonitor extends BaseCommand
         {
             monitor = syntheticsApi.monitors().show(id);
         }
-        catch(RuntimeException e)
+        catch(ErrorResponseException e)
         {
             // throw 404 if not found
         }

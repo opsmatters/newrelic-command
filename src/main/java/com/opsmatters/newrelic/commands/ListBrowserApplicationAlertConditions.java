@@ -23,6 +23,7 @@ import com.google.common.base.Optional;
 import com.opsmatters.newrelic.api.NewRelicApi;
 import com.opsmatters.newrelic.api.model.applications.BrowserApplication;
 import com.opsmatters.newrelic.api.model.alerts.conditions.AlertCondition;
+import com.opsmatters.newrelic.api.exceptions.ErrorResponseException;
 
 /**
  * Implements the New Relic command line option to list the alert conditions for a browser application.  
@@ -92,7 +93,7 @@ public class ListBrowserApplicationAlertConditions extends BaseCommand
         {
             application = api.browserApplications().show(applicationId);
         }
-        catch(RuntimeException e)
+        catch(ErrorResponseException e)
         {
             // throw 404 if not found
         }

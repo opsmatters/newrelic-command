@@ -23,6 +23,7 @@ import com.opsmatters.newrelic.api.NewRelicApi;
 import com.opsmatters.newrelic.api.model.applications.Application;
 import com.opsmatters.newrelic.api.model.servers.Server;
 import com.opsmatters.newrelic.api.model.labels.Label;
+import com.opsmatters.newrelic.api.exceptions.ErrorResponseException;
 
 /**
  * Implements the New Relic command line option to create a application label.  
@@ -121,7 +122,7 @@ public class CreateLabel extends BaseCommand
             {
                 application = api.applications().show(applicationId);
             }
-            catch(RuntimeException e)
+            catch(ErrorResponseException e)
             {
                 // throw 404 if not found
             }
@@ -143,7 +144,7 @@ public class CreateLabel extends BaseCommand
             {
                 server = api.servers().show(serverId);
             }
-            catch(RuntimeException e)
+            catch(ErrorResponseException e)
             {
                 // throw 404 if not found
             }
