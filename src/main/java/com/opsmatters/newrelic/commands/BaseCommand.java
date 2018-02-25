@@ -258,6 +258,15 @@ public abstract class BaseCommand
     }
 
     /**
+     * Returns the API key.
+     * @return The REST API key
+     */
+    protected String getApiKey()
+    {
+        return apiKey;
+    }
+
+    /**
      * Create the REST API client.
      * @return The REST API client
      */

@@ -87,7 +87,11 @@ public enum Opt
     VALIDATION_STRING("vs", "validation_string", true, "The validation string for the monitor, optional"),
     VERIFY_SSL("vso", "verify_ssl", true, "Execute an SSL handshake, defaults to false"),
     BYPASS_HEAD_REQUEST("bho", "bypass_head_request", true, "Send full HTTP requests for GET, defaults to true"),
-    TREAT_REDIRECT_AS_FAILURE("rfo", "treat_redirect_as_failure", true, "Fail on a HTTP redirect, defaults to false");
+    TREAT_REDIRECT_AS_FAILURE("rfo", "treat_redirect_as_failure", true, "Fail on a HTTP redirect, defaults to false"),
+    FILE("f", "file", true, "The name of the file to import/export"),
+    SHEET("s", "sheet", true, "For XLS and XLSX files, the name of the worksheet to import/export"),
+    DELETE("d", "delete", false, "For import files, delete any existing object with that name before creating the new object"),
+    APPEND("a", "append", false, "For export XLS and XLSX files, append the sheet to an existing workbook");
 
     Opt(String shortOption, String longOption, boolean arg, String description)
     {
