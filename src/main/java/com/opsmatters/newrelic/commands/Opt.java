@@ -91,7 +91,8 @@ public enum Opt
     FILE("f", "file", true, "The name of the file to import/export"),
     SHEET("s", "sheet", true, "For XLS and XLSX files, the name of the worksheet to import/export"),
     DELETE("d", "delete", false, "For import files, delete any existing object with that name before creating the new object"),
-    APPEND("a", "append", false, "For export XLS and XLSX files, append the sheet to an existing workbook");
+    APPEND("a", "append", false, "For export XLS and XLSX files, append the sheet to an existing workbook"),
+    POLICY("p", "policy", true, "The name of the alert policy (including wildcards)");
 
     Opt(String shortOption, String longOption, boolean arg, String description)
     {
