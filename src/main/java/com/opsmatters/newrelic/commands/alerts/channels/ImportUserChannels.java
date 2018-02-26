@@ -115,8 +115,9 @@ public class ImportUserChannels extends BaseCommand
         }
 
         // Delete the existing alert channels
-        if(delete)
-            manager.deleteAlertChannels(config.getAlertChannels());
+        //  - User channels cannot be deleted
+        //if(delete)
+        //    manager.deleteAlertChannels(config.getAlertChannels());
 
         // Create the new alert channels
         manager.createAlertChannels(config.getAlertChannels());
