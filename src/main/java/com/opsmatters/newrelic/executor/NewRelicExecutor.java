@@ -32,6 +32,8 @@ public class NewRelicExecutor
 {
     private static Map<String,BaseCommand> commands = new LinkedHashMap<String,BaseCommand>();
 
+    private static final String BASE_PKG = "com.opsmatters.newrelic.commands";
+
     /**
      * Entry point that selects the command to execute.
      * @param args The argument list
@@ -41,7 +43,18 @@ public class NewRelicExecutor
         System.setProperty("java.util.logging.config.file","logging.properties");
 
         // Load all the commands
-        loadCommands();
+        loadCommands(BASE_PKG+".accounts");
+        loadCommands(BASE_PKG+".alerts.channels");
+        loadCommands(BASE_PKG+".alerts.conditions");
+        loadCommands(BASE_PKG+".alerts.policies");
+        loadCommands(BASE_PKG+".applications");
+        loadCommands(BASE_PKG+".deployments");
+        loadCommands(BASE_PKG+".insights");
+        loadCommands(BASE_PKG+".labels");
+        loadCommands(BASE_PKG+".plugins");
+        loadCommands(BASE_PKG+".servers");
+        loadCommands(BASE_PKG+".synthetics");
+        loadCommands(BASE_PKG+".transactions");
 
         // Exit if no arguments provided
         if(args.length == 0)
@@ -86,12 +99,12 @@ public class NewRelicExecutor
     /**
      * Load the commands from the package.
      */
-    private static void loadCommands()
+    private static void loadCommands(String packageName)
     {
         try
         {
             ClassLoader loader = ClassLoader.getSystemClassLoader();
-            Set<ClassPath.ClassInfo> classes = ClassPath.from(loader).getTopLevelClasses("com.opsmatters.newrelic.commands");
+            Set<ClassPath.ClassInfo> classes = ClassPath.from(loader).getTopLevelClasses(packageName);
             for(ClassPath.ClassInfo ci : classes)
             {
                 Class cl = Class.forName(ci.getName());
