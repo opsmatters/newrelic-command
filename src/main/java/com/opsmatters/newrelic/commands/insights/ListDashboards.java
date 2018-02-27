@@ -85,7 +85,7 @@ public class ListDashboards extends BaseCommand
         NewRelicApi api = getApi();
 
         if(verbose())
-            logger.info("Getting dashboardss: "+name);
+            logger.info("Getting dashboards: "+name);
         Collection<Dashboard> dashboards = api.dashboards().list(name);
         if(verbose())
             logger.info("Found "+dashboards.size()+" dashboards");

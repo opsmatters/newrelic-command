@@ -90,7 +90,7 @@ public enum Opt
     TREAT_REDIRECT_AS_FAILURE("rfo", "treat_redirect_as_failure", true, "Fail on a HTTP redirect, defaults to false"),
     FILE("f", "file", true, "The name of the file to import/export"),
     SHEET("s", "sheet", true, "For XLS and XLSX files, the name of the worksheet to import/export"),
-    DELETE("d", "delete", false, "For import files, delete any existing object with that name before creating the new object"),
+    DELETE("d", "delete", false, "Delete any existing object with that name before creating the new object"),
     APPEND("a", "append", false, "For export XLS and XLSX files, append the sheet to an existing workbook"),
     POLICY("p", "policy", true, "The name of the alert policy (including wildcards)");
 

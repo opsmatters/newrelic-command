@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package com.opsmatters.newrelic.commands.alerts.policies;
+package com.opsmatters.newrelic.commands.insights;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
-import com.opsmatters.newrelic.api.model.alerts.policies.AlertPolicy;
-import com.opsmatters.newrelic.api.model.alerts.channels.AlertChannel;
-import com.opsmatters.newrelic.batch.AlertManager;
-import com.opsmatters.core.documents.Workbook;
+import com.opsmatters.newrelic.api.model.insights.Dashboard;
+import com.opsmatters.newrelic.api.model.insights.DashboardList;
+import com.opsmatters.newrelic.batch.DashboardManager;
 import com.opsmatters.newrelic.commands.Opt;
 import com.opsmatters.newrelic.commands.BaseCommand;
 
@@ -34,19 +32,18 @@ import com.opsmatters.newrelic.commands.BaseCommand;
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class ExportAlertPolicies extends BaseCommand
+public class ExportDashboards extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(ExportAlertPolicies.class.getName());
-    private static final String NAME = "export_alert_policies";
+    private static final Logger logger = Logger.getLogger(ExportDashboards.class.getName());
+    private static final String NAME = "export_dashboards";
 
     private String filename;
-    private String worksheet;
-    private boolean append = false;
+    private String name;
 
     /**
      * Default constructor.
      */
-    public ExportAlertPolicies()
+    public ExportDashboards()
     {
         options();
     }
@@ -67,9 +64,8 @@ public class ExportAlertPolicies extends BaseCommand
     protected void options()
     {
         super.options();
-        addOption(Opt.FILE, "The name of the file to export the alert policies to");
-        addOption(Opt.SHEET);
-        addOption(Opt.APPEND);
+        addOption(Opt.FILE, "The name of the file to export the dashboards to");
+        addOption(Opt.NAME, "The name of the dashboards (including wildcards)");
     }
 
     /**
@@ -85,42 +81,31 @@ public class ExportAlertPolicies extends BaseCommand
             logOptionValue(Opt.FILE, filename);
         }
 
-        // Sheet option
-        if(hasOption(cli, Opt.SHEET, false))
+        // Name option
+        if(hasOption(cli, Opt.NAME, false))
         {
-            worksheet = getOptionValue(cli, Opt.SHEET);
-            logOptionValue(Opt.SHEET, worksheet);
-        }
-
-        // Append option
-        if(hasOption(cli, Opt.APPEND, false))
-        {
-            append = true;
+            name = getOptionValue(cli, Opt.NAME);
+            logOptionValue(Opt.NAME, name);
         }
     }
 
     /**
-     * Export the alert policies.
+     * Export the dashboards.
      */
     protected void execute()
     {
-        AlertManager manager = new AlertManager(getApiKey(), verbose());
-
-        // Get the channels and policies
-        List<AlertChannel> channels = manager.getAlertChannels();
-        List<AlertPolicy> policies = manager.getAlertPolicies();
+        DashboardManager manager = new DashboardManager(getApiKey(), verbose());
+        List<Dashboard> dashboards = manager.getDashboards(true);
+        DashboardList dashboardList = new DashboardList(dashboards);
 
         try
         {
-            Workbook workbook = null;
-            if(append)
-                workbook = Workbook.getWorkbook(new File(filename));
-            manager.writeAlertPolicies(channels, policies, filename, worksheet, 
-                new FileOutputStream(filename), workbook);
+            manager.writeDashboards(dashboardList.list(name), filename,
+                new FileWriter(filename));
         }
         catch(IOException e)
         {
-            logger.severe("Unable to write alert policy file: "+e.getClass().getName()+": "+e.getMessage());
+            logger.severe("Unable to write dashboard file: "+e.getClass().getName()+": "+e.getMessage());
         }
     }
 }

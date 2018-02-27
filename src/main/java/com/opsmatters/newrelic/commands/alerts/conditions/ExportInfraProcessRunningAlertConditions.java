@@ -115,7 +115,7 @@ public class ExportInfraProcessRunningAlertConditions extends BaseCommand
      */
     protected void execute()
     {
-        AlertManager manager = new AlertManager(getApiKey());
+        AlertManager manager = new AlertManager(getApiKey(), verbose());
 
         // Get the policies and conditions
         List<AlertPolicy> policies = manager.getAlertPolicies();

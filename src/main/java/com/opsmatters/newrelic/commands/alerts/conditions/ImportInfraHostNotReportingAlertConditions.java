@@ -68,7 +68,7 @@ public class ImportInfraHostNotReportingAlertConditions extends BaseCommand
         super.options();
         addOption(Opt.FILE, "The name of the file containing alert conditions");
         addOption(Opt.SHEET);
-        addOption(Opt.DELETE, "For import files, delete any existing alert condition with that name before creating the new alert condition");
+        addOption(Opt.DELETE, "Delete any existing alert condition with that name before creating the new alert condition");
     }
 
     /**
@@ -103,7 +103,7 @@ public class ImportInfraHostNotReportingAlertConditions extends BaseCommand
      */
     protected void execute()
     {
-        AlertManager manager = new AlertManager(getApiKey());
+        AlertManager manager = new AlertManager(getApiKey(), verbose());
         AlertConfiguration config = new AlertConfiguration();
 
         // Get the lists of policies

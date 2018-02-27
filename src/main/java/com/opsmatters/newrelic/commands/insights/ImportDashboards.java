@@ -14,35 +14,34 @@
  * limitations under the License.
  */
 
-package com.opsmatters.newrelic.commands.alerts.channels;
+package com.opsmatters.newrelic.commands.insights;
 
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
-import com.opsmatters.newrelic.batch.AlertManager;
-import com.opsmatters.newrelic.batch.model.AlertConfiguration;
+import com.opsmatters.newrelic.batch.DashboardManager;
+import com.opsmatters.newrelic.batch.model.DashboardConfiguration;
 import com.opsmatters.newrelic.commands.Opt;
 import com.opsmatters.newrelic.commands.BaseCommand;
 
 /**
- * Implements the New Relic command line option to import a set of OpsGenie alert channels.
+ * Implements the New Relic command line option to import a set of dashboards.
  * 
  * @author Gerald Curley (opsmatters)
  */
-public class ImportOpsGenieChannels extends BaseCommand
+public class ImportDashboards extends BaseCommand
 {
-    private static final Logger logger = Logger.getLogger(ImportOpsGenieChannels.class.getName());
-    private static final String NAME = "import_opsgenie_channels";
+    private static final Logger logger = Logger.getLogger(ImportDashboards.class.getName());
+    private static final String NAME = "import_dashboards";
 
     private String filename;
-    private String worksheet;
     private boolean delete = false;
 
     /**
      * Default constructor.
      */
-    public ImportOpsGenieChannels()
+    public ImportDashboards()
     {
         options();
     }
@@ -63,9 +62,8 @@ public class ImportOpsGenieChannels extends BaseCommand
     protected void options()
     {
         super.options();
-        addOption(Opt.FILE, "The name of the file containing alert channels");
-        addOption(Opt.SHEET);
-        addOption(Opt.DELETE, "Delete any existing alert channel with that name before creating the new alert channel");
+        addOption(Opt.FILE, "The name of the file containing dashboards");
+        addOption(Opt.DELETE, "Delete any existing dashboard with that name before creating the new dashboard");
     }
 
     /**
@@ -81,13 +79,6 @@ public class ImportOpsGenieChannels extends BaseCommand
             logOptionValue(Opt.FILE, filename);
         }
 
-        // Sheet option
-        if(hasOption(cli, Opt.SHEET, false))
-        {
-            worksheet = getOptionValue(cli, Opt.SHEET);
-            logOptionValue(Opt.SHEET, worksheet);
-        }
-
         // Delete option
         if(hasOption(cli, Opt.DELETE, false))
         {
@@ -96,29 +87,29 @@ public class ImportOpsGenieChannels extends BaseCommand
     }
 
     /**
-     * Import the OpsGenie alert channels.
+     * Import the dashboards.
      */
     protected void execute()
     {
-        AlertManager manager = new AlertManager(getApiKey(), verbose());
-        AlertConfiguration config = new AlertConfiguration();
+        DashboardManager manager = new DashboardManager(getApiKey(), verbose());
+        DashboardConfiguration config = new DashboardConfiguration();
 
         try
         {
-            // Read the alert channels
-            config.addAlertChannels(manager.readOpsGenieChannels(filename, worksheet, 
-                new FileInputStream(filename)));
+            // Read the dashboards
+            config.setDashboards(manager.readDashboards(filename,
+                new FileReader(filename)));
         }
         catch(IOException e)
         {
-            logger.severe("Unable to read alert channel file: "+e.getClass().getName()+": "+e.getMessage());
+            logger.severe("Unable to read dashboard file: "+e.getClass().getName()+": "+e.getMessage());
         }
 
-        // Delete the existing alert channels
+        // Delete the existing dashboards
         if(delete)
-            manager.deleteAlertChannels(config.getAlertChannels());
+            manager.deleteDashboards(config.getDashboards());
 
-        // Create the new alert channels
-        manager.createAlertChannels(config.getAlertChannels());
+        // Create the new dashboards
+        manager.createDashboards(config.getDashboards());
     }
 }

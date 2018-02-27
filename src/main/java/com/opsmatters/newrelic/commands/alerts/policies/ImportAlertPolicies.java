@@ -68,7 +68,7 @@ public class ImportAlertPolicies extends BaseCommand
         super.options();
         addOption(Opt.FILE, "The name of the file containing alert policies");
         addOption(Opt.SHEET);
-        addOption(Opt.DELETE, "For import files, delete any existing alert policy with that name before creating the new alert policy");
+        addOption(Opt.DELETE, "Delete any existing alert policy with that name before creating the new alert policy");
     }
 
     /**
@@ -103,7 +103,7 @@ public class ImportAlertPolicies extends BaseCommand
      */
     protected void execute()
     {
-        AlertManager manager = new AlertManager(getApiKey());
+        AlertManager manager = new AlertManager(getApiKey(), verbose());
         AlertConfiguration config = new AlertConfiguration();
 
         // Get the list of channels

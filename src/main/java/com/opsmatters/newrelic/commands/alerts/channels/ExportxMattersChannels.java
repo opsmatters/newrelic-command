@@ -104,7 +104,7 @@ public class ExportxMattersChannels extends BaseCommand
      */
     protected void execute()
     {
-        AlertManager manager = new AlertManager(getApiKey());
+        AlertManager manager = new AlertManager(getApiKey(), verbose());
         AlertConfiguration config = new AlertConfiguration();
 
         // Get the channels

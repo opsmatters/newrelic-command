@@ -65,7 +65,7 @@ public class ImportPagerDutyChannels extends BaseCommand
         super.options();
         addOption(Opt.FILE, "The name of the file containing alert channels");
         addOption(Opt.SHEET);
-        addOption(Opt.DELETE, "For import files, delete any existing alert channel with that name before creating the new alert channel");
+        addOption(Opt.DELETE, "Delete any existing alert channel with that name before creating the new alert channel");
     }
 
     /**
@@ -100,7 +100,7 @@ public class ImportPagerDutyChannels extends BaseCommand
      */
     protected void execute()
     {
-        AlertManager manager = new AlertManager(getApiKey());
+        AlertManager manager = new AlertManager(getApiKey(), verbose());
         AlertConfiguration config = new AlertConfiguration();
 
         try
