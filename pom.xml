@@ -29,7 +29,7 @@
     <url>https://github.com/opsmatters/newrelic-command</url>
     <connection>scm:git:https://github.com/opsmatters/newrelic-command.git</connection>
     <developerConnection>scm:git:https://github.com/opsmatters/newrelic-command.git</developerConnection>
-    <tag>newrelic-command-1.2.1</tag>
+    <tag>newrelic-command-1.2.2</tag>
   </scm>
 
   <developers>
@@ -261,19 +261,19 @@ built.on=${TODAY}
 <dependency>
   <groupId>com.opsmatters</groupId>
   <artifactId>newrelic-batch</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 
 <dependency>
   <groupId>com.opsmatters</groupId>
   <artifactId>opsmatters-core</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 
 <dependency>
   <groupId>com.opsmatters</groupId>
   <artifactId>newrelic-api</artifactId>
-  <version>1.0.10</version>
+  <version>1.0.11</version>
 </dependency>
 
 <dependency>

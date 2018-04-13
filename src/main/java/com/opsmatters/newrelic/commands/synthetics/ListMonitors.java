@@ -101,7 +101,7 @@ public class ListMonitors extends BaseCommand
 
         if(verbose())
             logger.info("Getting monitors: "+name+(type != null ? " ("+type+")":""));
-        Collection<Monitor> monitors = syntheticsApi.monitors().list(name, type);
+        Collection<Monitor> monitors = syntheticsApi.monitors().list(name, type, 0, 100);
         if(verbose())
             logger.info("Found "+monitors.size()+" monitors");
         for(Monitor monitor : monitors)
