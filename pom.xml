@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.opsmatters</groupId>
   <artifactId>newrelic-command</artifactId>
-  <version>1.2.2-SNAPSHOT</version>
+  <version>1.2.2</version>
   <packaging>jar</packaging>
   <name>New Relic Command Line</name>
   <description>
